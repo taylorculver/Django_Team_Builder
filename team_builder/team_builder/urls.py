@@ -25,4 +25,5 @@ urlpatterns = [
     url(r"^accounts/", include("accounts.urls", namespace="accounts")),
     url(r"^accounts/", include("django.contrib.auth.urls")),
     url(r'^admin/', admin.site.urls),
+    url(r"^profiles/", include("profiles.urls", namespace="profiles")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
