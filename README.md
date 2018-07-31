@@ -7,8 +7,8 @@ password: testpassword
 # User Stories
 
 - [ ] Use the supplied files as static assets and example templates for your web site.
-- [ ] As a user of the site, I should be able to sign up for an account.
-- [ ] As a user of the site, I should be able to log into my account.
+- [x] As a user of the site, I should be able to sign up for an account.
+- [x] As a user of the site, I should be able to log into my account.
 - [ ] As a user of the site, I should be able to edit my profile.
 - [ ] As a user of the site, I should be able to upload an avatar image for my profile.
 - [ ] As a user of the site, I should be able to pick my skills for my profile.
