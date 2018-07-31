@@ -25,16 +25,16 @@ password: testpassword
 
 # Project Files
 
-applications.html - The users who have asked to join your project.
-profile.html - A user's profile.
-project.html - A project's details.
-project_new.html - The form for creating a new project.
-signin.html - The login page.
-index.html - The home page.
-profile_edit.html - The form for editing your profile.
-project_edit.html - The form for editing a project.
-search.html - Search results.
-signup.html - The sign up page.
+* applications.html - The users who have asked to join your project.
+* profile.html - A user's profile.
+* project.html - A project's details.
+* project_new.html - The form for creating a new project.
+* signin.html - The login page.
+* index.html - The home page.
+* profile_edit.html - The form for editing your profile.
+* project_edit.html - The form for editing a project.
+* search.html - Search results.
+* signup.html - The sign up page.
 
 # Credits
 

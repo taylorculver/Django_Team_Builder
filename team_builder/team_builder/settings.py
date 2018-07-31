@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',  # Necessary for sign in form
     'accounts',
+    'profiles',
+    'projects',
 ]
 
 MIDDLEWARE_CLASSES = [
