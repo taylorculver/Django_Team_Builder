@@ -5,8 +5,8 @@
   <div class="circle--actions--bar">
     <div class="bounds">
       <div class="grid-100">
-        <a class="button" href="{% url "projects:edit_project" %}">Edit Project</a>
-        <a class="button button-text" href="../../../templates/index.html">Delete Project</a>
+        <a class="button" href="{% url "projects:edit_project" pk=project.pk %}">Edit Project</a>
+        <a class="button button-text" href="{% url "projects:discard_project" pk=project.pk %}">Delete Project</a>
       </div>
     </div>
   </div>
@@ -15,16 +15,12 @@
     <div class="grid-70">
       <div class="circle--article--header">
         <h4 class="circle--article--section">Project</h4>
-        <h1 class="circle--article--title">Currency Calculator</h1>
-        <p class="circle--article--byline">Project Owner: <a>Wendy McElroy</a></p>
+        <h1 class="circle--article--title">{{ project.name }}</h1>
+        <p class="circle--article--byline">Project Owner: <a>{{ project.owner }}</a></p>
       </div>
 
       <div class="circle--article--body">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>{{ project.description }}</p>
       </div>
 
       <div class="circle--project--positions">
@@ -57,12 +53,12 @@
 
       <div class="circle--secondary--module">
         <h3>Project Timeline</h3>
-        <p>10 hours</p>
+        <p>{{ project.timeline }}</p>
       </div>
 
       <div class="circle--secondary--module">
         <h3>Applicant Requirements</h3>
-        <p>Applicants are required to work from our headquarters located in Antarctica.</p>
+        <p>{{ project.requirements }}</p>
       </div>
 
     </div>
