@@ -26,25 +26,39 @@ class EditProject(UpdateView):
     # template_name_suffix = "_project_edit"
 
 
-# class based view used originally, but moved to model form to handle custom HTML templates
-# class NewProject(CreateView):
-#     """Create new projects"""
-#     fields = ("name", "description", "timeline", "requirements")
-#     model = models.Project
-
-
-# @login_required
+@login_required
 def NewProject(request):
-    """Create new instances of Project model"""
+    """Create new instances of Project & Position models
+
+    http://www.joshuakehn.com/2013/7/18/multiple-django-forms-in-one-form.html
+    https://stackoverflow.com/questions/1395807/proper-way-to-handle-multiple-forms-on-one-page-in-django
+
+    """
     if request.method == "POST":
-        form = forms.ProjectForm(request.POST)
-        if form.is_valid():
-            project = form.save()
+        # add prefix's to call each form separately in project_new template
+        project_form = forms.ProjectForm(request.POST, prefix="project")
+        position_form = forms.PositionForm(request.POST, prefix="position")
+
+        # both forms must be valid to proceed
+        if project_form.is_valid() and position_form.is_valid():
+
+            # must collect logged in userid to ensure referential integrity to User model
+            project = project_form.save(commit=False)
+            project.owner_id = request.user.id
+            project.save()
+
+            # must collect projectid to ensure referential integrity to the Project model
+            position = position_form.save(commit=False)
+            position.project_id = project.id
+            position.save()
             return redirect('projects:project', pk=project.pk)
 
-    form = forms.ProjectForm()
-    # print(form)
-    return render(request, 'projects/project_new.html', {'form': form})
+    project_form = forms.ProjectForm(prefix="project")
+    position_form = forms.PositionForm(prefix="position")
+    return render(request, 'projects/project_new.html', {
+        'project_form': project_form,
+        'position_form': position_form
+    })
 
 
 class DiscardProject(DeleteView):
