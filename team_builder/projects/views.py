@@ -15,9 +15,17 @@ from . import models
 
 
 class Project(DetailView):
-    """Show individual projects"""
-    model = models.Project
+    """Show individual projects and associated positions"""
+    # model = models.Project
+    queryset = models.Project.objects.all()
     template_name = "projects/project.html"
+    context_object_name = "project"
+
+    def get_context_data(self, **kwargs):
+        context = super(Project, self).get_context_data(**kwargs)
+        context['positions'] = models.Position.objects.filter(project_id=self.kwargs['pk'])
+        context['position_titles'] = models.Position.objects.filter(project_id=self.kwargs['pk']).values_list('title', flat=True)
+        return context
 
 
 class EditProject(UpdateView):

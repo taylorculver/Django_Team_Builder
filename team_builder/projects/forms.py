@@ -66,6 +66,7 @@ class PositionForm(forms.ModelForm):
         exclude = ('project',)
 
 
+#  formset needed to feed into formset factory
 PositionFormSet = forms.modelformset_factory(
     models.Position,
     form=PositionForm,
@@ -79,8 +80,8 @@ PositionInlineFormSet = forms.inlineformset_factory(
     extra=1,
     fields=('title', 'description'),
     widgets={
-        'title': forms.Textarea(
-            attrs={'class': 'circle--input--h3', 'placeholder': 'Position Title'}),
+    #     # 'title': forms.Textarea(
+    #     #     attrs={'class': 'circle--input--h3', 'placeholder': 'Position Title'}),
         'description': forms.Textarea(
             attrs={'placeholder': 'Position description...'})},
     formset=PositionFormSet
