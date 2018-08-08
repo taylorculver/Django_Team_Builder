@@ -15,8 +15,16 @@ from . import models
 
 
 class Project(DetailView):
-    """Show individual projects and associated positions"""
-    # model = models.Project
+    """
+    Show individual projects and associated positions
+
+    Get Context Data for Second Model:
+    https://docs.djangoproject.com/en/1.9/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data
+
+    Obtain Postions Associated with Project Primary Key:
+    https://stackoverflow.com/questions/25881015/django-queryset-return-single-value
+
+    """
     queryset = models.Project.objects.all()
     template_name = "projects/project.html"
     context_object_name = "project"
@@ -24,15 +32,52 @@ class Project(DetailView):
     def get_context_data(self, **kwargs):
         context = super(Project, self).get_context_data(**kwargs)
         context['positions'] = models.Position.objects.filter(project_id=self.kwargs['pk'])
-        context['position_titles'] = models.Position.objects.filter(project_id=self.kwargs['pk']).values_list('title', flat=True)
         return context
 
-
-class EditProject(UpdateView):
+@login_required
+def EditProject(request, pk):
     """Edit individual projects"""
-    fields = ("name", "owner", "description", "timeline", "requirements")
-    model = models.Project
-    # template_name_suffix = "_project_edit"
+    project = get_object_or_404(models.Project, pk=pk)
+    print(project.name)
+    position_formset = forms.PositionInlineFormSet(
+        queryset=models.Position.objects.filter(project_id=pk)
+    )
+
+    # add prefix's to call each form separately in project_new template
+    if request.method == 'POST':
+        project_form = forms.ProjectForm(request.POST,
+                                         prefix="project",
+                                         instance=project)
+        print(project_form)
+        position_formset = forms.PositionInlineFormSet(request.POST,
+                                                 prefix="position",
+                                                 queryset=models.Position.objects.filter(project_id=pk))
+
+        # both forms must be valid to proceed
+        if project_form.is_valid() and position_formset.is_valid():
+
+            # must collect logged in userid to ensure referential integrity to User model
+            project = project_form.save(commit=False)
+            project.owner_id = request.user.id
+            project.save()
+
+            # must collect projectid to ensure referential integrity to the Project model
+            positions = position_formset.save(commit=False)
+            for position in positions:
+                position.project_id = pk
+                position.save()
+            return redirect('projects:project', pk=pk)
+
+    else:
+        project_form = forms.ProjectForm(prefix="project", instance=project)
+        position_formset = forms.PositionInlineFormSet(prefix="position",
+                                                       queryset=models.Position.objects.filter(project_id=pk))
+
+    return render(request, 'projects/project_edit.html', {
+        'project_form': project_form,
+        'position_formset': position_formset,
+        "pk": pk
+    })
 
 
 @login_required
@@ -89,6 +134,10 @@ def NewProject(request):
 
 
 class DiscardProject(DeleteView):
-    """Discard Existing Projects"""
+    """
+    Discard Existing Projects
+    https://docs.djangoproject.com/en/1.9/ref/class-based-views/generic-editing/
+
+    """
     model = models.Project
     success_url = reverse_lazy("home")
