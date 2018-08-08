@@ -28,3 +28,10 @@ urlpatterns = [
     url(r"^profiles/", include("profiles.urls", namespace="profiles")),
     url(r"^projects/", include("projects.urls", namespace="projects")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# For Debug toolbar
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

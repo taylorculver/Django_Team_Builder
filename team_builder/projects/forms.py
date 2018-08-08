@@ -64,3 +64,24 @@ class PositionForm(forms.ModelForm):
         model = models.Position
         # current project is excluded from form but collected through relationship with project model
         exclude = ('project',)
+
+
+PositionFormSet = forms.modelformset_factory(
+    models.Position,
+    form=PositionForm,
+)
+
+# formset factory needed to process multiple Position objects per Project object
+PositionInlineFormSet = forms.inlineformset_factory(
+    model=models.Position,
+    parent_model=models.Project,
+    can_delete=False,
+    extra=1,
+    fields=('title', 'description'),
+    widgets={
+        'title': forms.Textarea(
+            attrs={'class': 'circle--input--h3', 'placeholder': 'Position Title'}),
+        'description': forms.Textarea(
+            attrs={'placeholder': 'Position description...'})},
+    formset=PositionFormSet
+    )
