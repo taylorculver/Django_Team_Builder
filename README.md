@@ -6,14 +6,14 @@ password: testpassword
 
 # User Stories
 
-- [ ] Use the supplied files as static assets and example templates for your web site.
+- [x] Use the supplied files as static assets and example templates for your web site.
 - [x] As a user of the site, I should be able to sign up for an account.
 - [x] As a user of the site, I should be able to log into my account.
 - [ ] As a user of the site, I should be able to edit my profile.
 - [ ] As a user of the site, I should be able to upload an avatar image for my profile.
 - [ ] As a user of the site, I should be able to pick my skills for my profile.
 - [x] As a user of the site, I should be able to create a project that I need help on.
-- [ ] As a user of the site, I should be able to specify the positions my project needs help in with a name, a description, and related skill.
+- [x] As a user of the site, I should be able to specify the positions my project needs help in with a name, a description, and related skill.
 - [ ] As a user of the site, I should be able to see all of the applicants for my project's positions.
 - [ ] As a user of the site, I should be able to approve an applicant for a position in my project.
 - [ ] As a user of the site, I should be able to reject an applicant for a position in my project.

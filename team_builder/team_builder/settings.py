@@ -132,3 +132,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
 
 INTERNAL_IPS = ['127.0.0.1']  # must add internal IPS for Django debug toolbar
 
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'assets')
