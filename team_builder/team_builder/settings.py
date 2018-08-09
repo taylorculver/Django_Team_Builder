@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'bootstrap3',  # Necessary for sign in form
     'accounts',
-    'profiles',
     'projects',
 ]
 
@@ -131,6 +130,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
 
 INTERNAL_IPS = ['127.0.0.1']  # must add internal IPS for Django debug toolbar
+
+'''Used to submit data to base user model and reroute back to profile page'''
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: "/accounts/%s/" % u.username,
+}
 
 MEDIA_URL = '/media/'
 

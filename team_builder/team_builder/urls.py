@@ -23,9 +23,8 @@ from . import views
 urlpatterns = [
     url(r'^$', views.Home.as_view(), name="home"),
     url(r"^accounts/", include("accounts.urls", namespace="accounts")),
-    url(r"^accounts/", include("django.contrib.auth.urls")),
+    # url(r"^accounts/", include("django.contrib.auth.urls")),
     url(r'^admin/', admin.site.urls),
-    url(r"^profiles/", include("profiles.urls", namespace="profiles")),
     url(r"^projects/", include("projects.urls", namespace="projects")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
