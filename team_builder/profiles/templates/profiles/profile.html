@@ -6,7 +6,7 @@
     <nav class="bounds">
       <ul class="circle--pill--list">
         <li><a href="../../../templates/applications.html">Applications</a></li>
-        <li><a class="selected" href="{% url "profiles:profile" pk=user.id %}">Profile</a></li>
+{#        <li><a class="selected" href="{% url "profiles:profile" pk=user.id %}">Profile</a></li>#}
       </ul>
     </nav>
   </div>
@@ -17,7 +17,7 @@
         <h2>Profile</h2>
       </div>
       <div class="circle--fluid--cell circle--fluid--secondary">
-        <a class="button icon-on-left" href="{% url "profiles:edit_profile" pk=user.id %}">Edit</a>
+{#        <a class="button icon-on-left" href="{% url "profiles:edit_profile" pk=user.pk %}">Edit</a>#}
       </div>
     </div>
 
@@ -37,7 +37,7 @@
         </thead>
         <tbody>
         {% for project in projects %}
-          <tr class="clickable-row" data-href="project.html">
+          <tr class="clickable-row" data-href="{% url "projects:project" pk=project.id %}">
             <td>
               <h3>{{ project.name }}</h3>
             </td>

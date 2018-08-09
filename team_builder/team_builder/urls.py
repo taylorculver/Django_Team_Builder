@@ -27,7 +27,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^profiles/", include("profiles.urls", namespace="profiles")),
     url(r"^projects/", include("projects.urls", namespace="projects")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
+              + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # For Debug toolbar
 if settings.DEBUG:

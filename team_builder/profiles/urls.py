@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     url(r'^(?P<pk>\d+)/$', views.Profile.as_view(), name="profile"),
-    url(r'^(?P<pk>\d+)/edit/$', views.EditProfile.as_view(), name="edit_profile"),
+    url(r'^(?P<pk>\d+)/edit/$', views.EditProfile, name="edit_profile"),
 ]
