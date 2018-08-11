@@ -29,7 +29,7 @@ class Profile(models.Model):
 
 
 class Skill(models.Model):
-    """Model for positions required on project"""
+    """Model for listing user skills"""
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE

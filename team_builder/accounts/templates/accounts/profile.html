@@ -6,7 +6,7 @@
     <nav class="bounds">
       <ul class="circle--pill--list">
         <li><a href="../../../templates/applications.html">Applications</a></li>
-        <li><a class="selected" href="{% url "accounts:profile" user.username %}">Profile</a></li>
+        <li><a class="selected" href="{% url "accounts:profile" pk=user.id %}">Profile</a></li>
       </ul>
     </nav>
   </div>
@@ -17,7 +17,7 @@
         <h2>Profile</h2>
       </div>
       <div class="circle--fluid--cell circle--fluid--secondary">
-        <a class="button icon-on-left" href="{% url "accounts:edit_profile" user.username %}">Edit</a>
+        <a class="button icon-on-left" href="{% url "accounts:edit_profile" pk=user.id %}">Edit</a>
       </div>
     </div>
 

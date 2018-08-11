@@ -14,10 +14,37 @@ from . import forms
 from .apps import Project, Position
 
 
-@login_required(login_url='/accounts/sign_in/')
-def profile(request, username):
-    user = get_object_or_404(models.User, username=username)
-    return render(request, 'accounts/profile.html', {'user': user})
+# @login_required(login_url='/accounts/sign_in/')
+# def profile(request, pk):
+#     user = get_object_or_404(models.User, id=pk)
+#     project = Project.objects.filter(owner_id=pk)
+#     return render(request, 'accounts/profile.html',
+#                   {'user': user},
+#                   {'project': project}
+#                   )
+
+# @login_required(login_url='/accounts/sign_in/')
+class Profile(DetailView):
+    """
+    Show individual projects and associated positions
+
+    Get Context Data for Second Model:
+    https://docs.djangoproject.com/en/1.9/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data
+
+    Obtain Postions Associated with Project Primary Key:
+    https://stackoverflow.com/questions/25881015/django-queryset-return-single-value
+
+    """
+    model = models.User
+    template_name = "accounts/profile.html"
+    context_object_name = "profile"
+
+    def get_context_data(self, **kwargs):
+        context = super(Profile, self).get_context_data(**kwargs)
+        context['user'] = models.User.objects.get(id=self.kwargs.get('pk'))
+        context['projects'] = Project.objects.filter(owner_id=self.kwargs['pk'])
+        return context
+
 
 # class Profile(DetailView):
 #     """
@@ -42,8 +69,8 @@ def profile(request, username):
 #         return context
 
 @login_required
-def edit_profile(request, username):
-    user = get_object_or_404(models.User, username=username)
+def edit_profile(request, pk):
+    user = get_object_or_404(models.User, id=pk)
     # user_form = forms.UserForm(instance=user)
     profile_form = forms.ProfileForm(instance=user.profile)
 
