@@ -49,27 +49,28 @@ class Profile(DetailView):
 def edit_profile(request, pk):
     user = models.User.objects.get(pk=pk)
     projects = Project.objects.filter(owner_id=pk)
-    # user_form = forms.UserForm(instance=user)
-    print(user)
+    profile = models.Profile.objects.get(username_id=pk)
+
+    skills_formset = inlineformset_factory(models.Profile, models.Skill, fields=('skill',), max_num=1, can_delete=False)
     profile_form = forms.ProfileForm(instance=user.profile)
-    print(profile_form)
 
     if request.method == 'POST':
-        # user_form = forms.UserForm(instance=user, data=request.POST)
         profile_form = forms.ProfileForm(instance=user.profile,
                                          data=request.POST,
                                          files=request.FILES)
-        print(profile_form.is_valid())
-        if profile_form.is_valid():
-            # user_form.save()
+
+        skills_formset = skills_formset(request.POST, request.FILES, instance=profile)
+
+        if profile_form.is_valid() and skills_formset.is_valid():
             profile_form.save()
-            # messages.success(request, 'Your profile was successfully updated!')
+            skills_formset.save()
             return redirect('accounts:profile', pk=pk)
+
     return render(request, 'accounts/profile_edit.html', {
-        # 'user_form': user_form,
         'profile_form': profile_form,
         'pk': pk,
-        'projects': projects
+        'projects': projects,
+        'skills_formset': skills_formset
     })
 
 
