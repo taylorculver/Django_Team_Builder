@@ -1,0 +1,5 @@
+{% for filter in filters %}
+  <li>
+      <a class="hover" href="{% url 'projects:filter' filter=filter %}">{{ filter }}</a>
+  </li>
+{% endfor %}

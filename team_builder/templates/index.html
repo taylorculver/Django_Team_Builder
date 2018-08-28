@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% load static from staticfiles %}
+{% load positions_extra %}
 
 
 {% block body_content %}
@@ -21,6 +22,7 @@
     <div class="grid-25">
       <div class="circle--filter circle--secondary--module">
         <h4>Project Needs</h4>
+        {% nav_positions_list %}
         <ul class="circle--filter--list">
           <li><a class="selected">All Needs</a></li>
           {% for position in positions %}
@@ -45,7 +47,7 @@
             <th class="circle--cell--right">Project Needs</th>
           </tr>
         </thead>
-        <tbody>
+                  <tbody>
         {% for project in projects %}
           <tr class="clickable-row" data-href="{% url "projects:project" pk=project.id %}">
             <td>
@@ -57,7 +59,7 @@
           </tr>
         {% endfor %}
         </tbody>
-{#          <tbody>#}
+{#        <tbody>#}
 {#          <tr class="clickable-row" data-href="project.html">#}
 {#            <td>#}
 {#              <h3>Invoice Delivery Tool</h3>#}
