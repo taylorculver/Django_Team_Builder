@@ -32,9 +32,6 @@ class Profile(DetailView):
     Get Context Data for Second Model:
     https://docs.djangoproject.com/en/1.9/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data
 
-    Obtain Postions Associated with Project Primary Key:
-    https://stackoverflow.com/questions/25881015/django-queryset-return-single-value
-
     """
     model = models.User
     template_name = "accounts/profile.html"
@@ -48,47 +45,29 @@ class Profile(DetailView):
         return context
 
 
-# class Profile(DetailView):
-#     """
-#     Show individual projects and associated positions
-#
-#     Get Context Data for Second Model:
-#     https://docs.djangoproject.com/en/1.9/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data
-#
-#     Obtain Postions Associated with Project Primary Key:
-#     https://stackoverflow.com/questions/25881015/django-queryset-return-single-value
-#
-#     """
-#     queryset = models.User.objects.all()
-#     template_name = "accounts/profile.html"
-#     context_object_name = "profile"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(Profile, self).get_context_data(**kwargs)
-#         context['profile'] = models.Profile.objects.filter(id=self.kwargs['pk'])
-#         context['projects'] = Project.objects.filter(owner_id=self.kwargs['pk'])
-#         # context['positions'] = Position.objects.filter(project_id__in=Project.objects.filter(owner_id=self.kwargs['pk']).values_list('id'))
-#         return context
-
 @login_required
 def edit_profile(request, pk):
-    user = get_object_or_404(models.User, id=pk)
+    user = models.User.objects.get(pk=pk)
     # user_form = forms.UserForm(instance=user)
+    print(user)
     profile_form = forms.ProfileForm(instance=user.profile)
+    print(profile_form)
 
     if request.method == 'POST':
         # user_form = forms.UserForm(instance=user, data=request.POST)
         profile_form = forms.ProfileForm(instance=user.profile,
                                          data=request.POST,
                                          files=request.FILES)
+        print(profile_form.is_valid())
         if profile_form.is_valid():
             # user_form.save()
             profile_form.save()
-            messages.success(request, 'Your profile was successfully updated!')
-            return HttpResponseRedirect(user.get_absolute_url())
+            # messages.success(request, 'Your profile was successfully updated!')
+            return redirect('accounts:profile', pk=pk)
     return render(request, 'accounts/profile_edit.html', {
         # 'user_form': user_form,
-        'profile_form': profile_form
+        'profile_form': profile_form,
+        'pk': pk
     })
 
 
