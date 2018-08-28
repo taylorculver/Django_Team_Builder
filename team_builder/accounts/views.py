@@ -48,6 +48,7 @@ class Profile(DetailView):
 @login_required
 def edit_profile(request, pk):
     user = models.User.objects.get(pk=pk)
+    projects = Project.objects.filter(owner_id=pk)
     # user_form = forms.UserForm(instance=user)
     print(user)
     profile_form = forms.ProfileForm(instance=user.profile)
@@ -67,7 +68,8 @@ def edit_profile(request, pk):
     return render(request, 'accounts/profile_edit.html', {
         # 'user_form': user_form,
         'profile_form': profile_form,
-        'pk': pk
+        'pk': pk,
+        'projects': projects
     })
 
 
