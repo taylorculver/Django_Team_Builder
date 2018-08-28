@@ -28,6 +28,7 @@ class Profile(models.Model):
         return self.username
 
 
+# from accounts.models import Skill -- to use in Python Shell
 class Skill(models.Model):
     """Model for listing user skills"""
     profile = models.ForeignKey(

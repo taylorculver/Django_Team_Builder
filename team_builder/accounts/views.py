@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import (AuthenticationForm,
                                        UserCreationForm, PasswordChangeForm)
 from django.core.urlresolvers import reverse
+from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import DetailView, TemplateView
@@ -43,6 +44,7 @@ class Profile(DetailView):
         context = super(Profile, self).get_context_data(**kwargs)
         context['user'] = models.User.objects.get(id=self.kwargs.get('pk'))
         context['projects'] = Project.objects.filter(owner_id=self.kwargs['pk'])
+        context['skills'] = models.Skill.objects.filter(profile_id=models.Profile.objects.get(username_id=self.kwargs['pk']).id)
         return context
 
 
@@ -89,6 +91,19 @@ def edit_profile(request, pk):
         'profile_form': profile_form
     })
 
+
+def add_skills(request, pk):
+    profile = models.Profile.objects.get(pk=pk)
+    SkillsInLineFormset = inlineformset_factory(models.Profile, models.Skill, fields=('skill',), max_num=1, can_delete=False)
+    if request.method == "POST":
+        formset = SkillsInLineFormset(request.POST, request.FILES, instance=profile)
+        if formset.is_valid():
+            formset.save()
+            # Do something. Should generally end with a redirect. For example:
+            return HttpResponseRedirect(profile.get_absolute_url())
+    else:
+        formset = SkillsInLineFormset(instance=profile)
+    return render(request, 'accounts/formsetfactorytest.html', {'formset': formset})
 
 def sign_in(request):
     form = AuthenticationForm()

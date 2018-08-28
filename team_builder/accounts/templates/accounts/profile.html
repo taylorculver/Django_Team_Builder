@@ -41,11 +41,9 @@
             <td>
               <h3>{{ project.name }}</h3>
             </td>
-            {% for position in positions %}
             <td class="circle--cell--right">
-              <span class="secondary-label">{{ position.title }}</span>
+              <span class="secondary-label">{{ project.requirements }}</span>
             </td>
-            {% endfor %}
           </tr>
         {% endfor %}
         </tbody>
@@ -55,9 +53,9 @@
     <div class="grid-25 grid-push-5">
 
       <div class="circle--secondary--module">
-        <div class="circle--primary--avatar">
+        <div>
             {% if user.profile.avatar %}
-                <img width="100" height="100" alt="image" src="{{ user.profile.avatar.url }}">
+                <img class="circle--primary--avatar" alt="image" src="{{ user.profile.avatar.url }}">
             {% endif %}
         </div>
       </div>
