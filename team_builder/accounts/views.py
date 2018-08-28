@@ -74,18 +74,18 @@ def edit_profile(request, pk):
     })
 
 
-def add_skills(request, pk):
-    profile = models.Profile.objects.get(pk=pk)
-    SkillsInLineFormset = inlineformset_factory(models.Profile, models.Skill, fields=('skill',), max_num=1, can_delete=False)
-    if request.method == "POST":
-        formset = SkillsInLineFormset(request.POST, request.FILES, instance=profile)
-        if formset.is_valid():
-            formset.save()
-            # Do something. Should generally end with a redirect. For example:
-            return HttpResponseRedirect(profile.get_absolute_url())
-    else:
-        formset = SkillsInLineFormset(instance=profile)
-    return render(request, 'accounts/formsetfactorytest.html', {'formset': formset})
+# def add_skills(request, pk):
+#     profile = models.Profile.objects.get(pk=pk)
+#     SkillsInLineFormset = inlineformset_factory(models.Profile, models.Skill, fields=('skill',), max_num=1, can_delete=False)
+#     if request.method == "POST":
+#         formset = SkillsInLineFormset(request.POST, request.FILES, instance=profile)
+#         if formset.is_valid():
+#             formset.save()
+#             # Do something. Should generally end with a redirect. For example:
+#             return HttpResponseRedirect(profile.get_absolute_url())
+#     else:
+#         formset = SkillsInLineFormset(instance=profile)
+#     return render(request, 'accounts/formsetfactorytest.html', {'formset': formset})
 
 def sign_in(request):
     form = AuthenticationForm()
@@ -97,7 +97,7 @@ def sign_in(request):
                 if user.is_active:
                     login(request, user)
                     return HttpResponseRedirect(
-                        reverse('accounts:profile', args=[user.username])
+                        reverse('accounts:profile', args=[user.id])
                     )
                 else:
                     messages.error(

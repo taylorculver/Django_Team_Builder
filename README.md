@@ -11,7 +11,7 @@ password: testpassword
 - [x] As a user of the site, I should be able to log into my account.
 - [x] As a user of the site, I should be able to edit my profile.
 - [x] As a user of the site, I should be able to upload an avatar image for my profile.
-- [ ] As a user of the site, I should be able to pick my skills for my profile.
+- [x] As a user of the site, I should be able to pick my skills for my profile.
 - [x] As a user of the site, I should be able to create a project that I need help on.
 - [x] As a user of the site, I should be able to specify the positions my project needs help in with a name, a description, and related skill.
 - [ ] As a user of the site, I should be able to see all of the applicants for my project's positions.
@@ -21,7 +21,7 @@ password: testpassword
 - [ ] As a user of the site, I should be able to search for projects based on words in their titles or descriptions.
 - [ ] As a user of the site, I should be able to filter projects by the positions they need filled.
 - [ ] As a user of the site, I should be able to apply for a position in a project.
-- [ ] As a user of the site, I should be able to log out.
+- [x] As a user of the site, I should be able to log out.
 
 # Project Files
 

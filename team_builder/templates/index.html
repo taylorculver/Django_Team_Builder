@@ -23,14 +23,16 @@
         <h4>Project Needs</h4>
         <ul class="circle--filter--list">
           <li><a class="selected">All Needs</a></li>
-          <li><a>Android Developer</a></li>
-          <li><a>Designer</a></li>
-          <li><a>Java Developer</a></li>
-          <li><a>PHP Developer</a></li>
-          <li><a>Python Developer</a></li>
-          <li><a>Rails Developer</a></li>
-          <li><a>WordPress Developer</a></li>
-          <li><a>iOS Developer</a></li>
+          {% for position in positions %}
+            <li><a>{{ position.title }}</a></li>
+          {% endfor %}
+{#          <li><a>Designer</a></li>#}
+{#          <li><a>Java Developer</a></li>#}
+{#          <li><a>PHP Developer</a></li>#}
+{#          <li><a>Python Developer</a></li>#}
+{#          <li><a>Rails Developer</a></li>#}
+{#          <li><a>WordPress Developer</a></li>#}
+{#          <li><a>iOS Developer</a></li>#}
         </ul>
       </div>
     </div>
@@ -44,23 +46,35 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="clickable-row" data-href="project.html">
+        {% for project in projects %}
+          <tr class="clickable-row" data-href="{% url "projects:project" pk=project.id %}">
             <td>
-              <h3>Invoice Delivery Tool</h3>
+              <h3>{{ project.name }}</h3>
             </td>
             <td class="circle--cell--right">
-              <span class="secondary-label">Rails Developer</span>
+              <span class="secondary-label">{{ project.requirements }}</span>
             </td>
           </tr>
-          <tr class="clickable-row" data-href="project.html">
-            <td>
-              <h3>Twitter Client</h3>
-            </td>
-            <td class="circle--cell--right">
-              <span class="secondary-label">Designer</span>
-            </td>
-          </tr>
+        {% endfor %}
         </tbody>
+{#          <tbody>#}
+{#          <tr class="clickable-row" data-href="project.html">#}
+{#            <td>#}
+{#              <h3>Invoice Delivery Tool</h3>#}
+{#            </td>#}
+{#            <td class="circle--cell--right">#}
+{#              <span class="secondary-label">Rails Developer</span>#}
+{#            </td>#}
+{#          </tr>#}
+{#          <tr class="clickable-row" data-href="project.html">#}
+{#            <td>#}
+{#              <h3>Twitter Client</h3>#}
+{#            </td>#}
+{#            <td class="circle--cell--right">#}
+{#              <span class="secondary-label">Designer</span>#}
+{#            </td>#}
+{#          </tr>#}
+{#        </tbody>#}
       </table>
     </div>
   </div>

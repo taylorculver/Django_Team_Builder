@@ -51,8 +51,15 @@
         <div class="circle--fluid--cell circle--fluid--secondary">
           <nav>
             <ul class="circle--inline">
-              <li><a href="{% url "accounts:sign_up" %}">Sign Up</a></li>
+
+              {% if user.is_authenticated %}
+                  <li><a href="{% url "accounts:profile" pk=user.id %}">Profile</a></li>
+                  <li><a href="{% url "accounts:sign_out" %}">Sign Out</a></li>
+                {% else %}
+                <li><a href="{% url "accounts:sign_up" %}">Sign Up</a></li>
               <li><a href="{% url "accounts:sign_in" %}">Sign In</a></li>
+                {% endif %}
+
             </ul>
           </nav>
         </div>
