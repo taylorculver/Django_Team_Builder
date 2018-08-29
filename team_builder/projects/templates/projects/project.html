@@ -16,7 +16,7 @@
       <div class="circle--article--header">
         <h4 class="circle--article--section">Project</h4>
         <h1 class="circle--article--title">{{ project.name }}</h1>
-        <p class="circle--article--byline">Project Owner: <a>{{ project.owner }}</a></p>
+        <p class="circle--article--byline">Project Owner: <a href="">{{ project.owner }}</a></p>
       </div>
 
       <div class="circle--article--body">
@@ -31,7 +31,7 @@
           <li>
             <h3>{{ position.title }}</h3>
             <p>{{ position.description }}</p>
-            <a class="button button-primary">Apply</a>
+            <a class="button button-primary" href="{% url 'accounts:applications' pk=user.id %}">Apply</a>
           </li>
           {% endfor %}
           <li>

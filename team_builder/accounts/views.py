@@ -128,7 +128,7 @@ def sign_up(request):
                 "You're now a user! You've been signed in, too."
             )
             return HttpResponseRedirect(reverse(
-                'accounts:profile', args=[user.username]))
+                'accounts:profile', args=[user.id]))
     return render(request, 'accounts/signup.html', {'form': form})
 
 
@@ -137,3 +137,7 @@ def sign_out(request):
     logout(request)
     messages.success(request, "You've been signed out. Come back soon!")
     return HttpResponseRedirect(reverse('home'))
+
+
+class Applications(TemplateView):
+    template_name = "accounts/applications.html"

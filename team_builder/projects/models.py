@@ -29,3 +29,19 @@ class Position(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Application(models.Model):
+    """Model for applications to a position"""
+    applicant = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE
+    )
+    status = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.id
