@@ -8,6 +8,6 @@ urlpatterns = [
     url(r'^sign_out/$', views.sign_out, name='sign_out'),
     url(r'^(?P<pk>\w+)/$', views.Profile.as_view(), name="profile"),
     url(r'^(?P<pk>\w+)/edit/$', views.edit_profile, name="edit_profile"),
-    url(r'^(?P<pk>\w+)/applications/$', views.Applications.as_view(), name="applications")
+    url(r'^(?P<pk>\w+)/applications/$', views.applications_view, name="applications")
     # url(r'^test/(?P<pk>\w+)/$', views.add_skills, name="skills"),
 ]

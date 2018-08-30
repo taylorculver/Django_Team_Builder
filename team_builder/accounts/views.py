@@ -12,7 +12,7 @@ from django.views.generic import DetailView, TemplateView
 
 from . import models
 from . import forms
-from .apps import Project, Position
+from .apps import Project, Position, Applicant
 
 
 # @login_required(login_url='/accounts/sign_in/')
@@ -139,5 +139,17 @@ def sign_out(request):
     return HttpResponseRedirect(reverse('home'))
 
 
-class Applications(TemplateView):
-    template_name = "accounts/applications.html"
+def applications_view(request, pk):
+    applicants = Applicant.objects.all()
+    # print(applicants)
+    projects = Project.objects.all()
+    positions = Position.objects.all()
+    return render(request, "accounts/applications.html", {
+        'pk': pk,
+        'applicants': applicants,
+        'projects': projects,
+        'positions': positions
+    })
+
+# class Applications(TemplateView):
+#     template_name = "accounts/applications.html"

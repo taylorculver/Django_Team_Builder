@@ -13,6 +13,7 @@ class Project(models.Model):
     description = models.TextField()
     timeline = models.TextField()
     requirements = models.TextField()
+    url = models.TextField()
 
     def __str__(self):
         return self.name
@@ -31,7 +32,7 @@ class Position(models.Model):
         return self.title
 
 
-class Application(models.Model):
+class Applicant(models.Model):
     """Model for applications to a position"""
     applicant = models.ForeignKey(
         User,

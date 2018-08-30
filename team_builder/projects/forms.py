@@ -92,5 +92,5 @@ class ApplicationForm(forms.ModelForm):
     # status = forms.CharField(max_length=200)
 
     class Meta:
-        model = models.Application
+        model = models.Applicant
         exclude = ('position', 'applicant', 'status')

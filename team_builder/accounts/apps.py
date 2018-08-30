@@ -9,3 +9,4 @@ class ProfilesConfig(AppConfig):
 # https://stackoverflow.com/questions/43847173/cannot-import-models-from-another-app-in-django
 Project = apps.get_model('projects', 'Project')
 Position = apps.get_model('projects', 'Position')
+Applicant = apps.get_model('projects', 'Applicant')
