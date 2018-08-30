@@ -10,7 +10,8 @@ class Profile(models.Model):
     """Model for user-created Profile"""
     username = models.OneToOneField(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        unique=True
     )
     full_name = models.CharField(max_length=200)
     description = models.TextField()
@@ -25,7 +26,7 @@ class Profile(models.Model):
     #     super(Profile, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.username
+        return str(self.username)
 
 
 # from accounts.models import Skill -- to use in Python Shell

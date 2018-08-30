@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.db import models
 
+from accounts.models import Profile
 
 class Project(models.Model):
     """Model for user-created project"""
@@ -23,7 +24,8 @@ class Position(models.Model):
     """Model for positions required on project"""
     project = models.ForeignKey(
         Project,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        # related_name="position"
     )
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -35,14 +37,19 @@ class Position(models.Model):
 class Applicant(models.Model):
     """Model for applications to a position"""
     applicant = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
+        Profile,
+        on_delete=models.CASCADE,
+        to_field="username_id"
     )
     position = models.ForeignKey(
         Position,
         on_delete=models.CASCADE,
     )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE
+    )
     status = models.CharField(max_length=200, default="undecided")
 
     def __str__(self):
-        return self.id
+        return str(self.applicant_id)

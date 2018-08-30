@@ -140,16 +140,29 @@ def sign_out(request):
 
 
 def applications_view(request, pk):
-    applicants = Applicant.objects.all()
-    # print(applicants)
-    projects = Project.objects.all()
-    positions = Position.objects.all()
+    """see all of the applicants for my project's positions"""
+    # query all positions to be filled
+    all_positions = Position.objects.all()
+
+    # query all projects that belong to current logged in user
+    my_projects = Project.objects.filter(owner_id=pk)
+
+    # build list of all project id's belonging to current logged in user
+    my_projects_values = my_projects.values()
+    my_project_ids = [ids['id'] for ids in my_projects_values]
+
+    # query list of all applicants who have applied to my projects
+    queryset = Applicant.objects.filter(project_id__in=my_project_ids)
+
+    # join related Applicant and Position models to applicants who have applied to my projects
+    joined_queryset = queryset.select_related("applicant").select_related("position")
+
+    # return values for applicant full name, position title, and project names to return to view
+    applicants = joined_queryset.values('applicant_id', 'applicant__full_name', 'position__title', 'project__name')
+
     return render(request, "accounts/applications.html", {
         'pk': pk,
+        'all_positions': all_positions,
         'applicants': applicants,
-        'projects': projects,
-        'positions': positions
+        'my_projects': my_projects
     })
-
-# class Applications(TemplateView):
-#     template_name = "accounts/applications.html"

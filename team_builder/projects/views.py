@@ -31,7 +31,9 @@ def project_view(request, pk):
         if application_form.is_valid():
             application = application_form.save(commit=False)
             application.applicant_id = request.user.id
+            # bug - these cannot be hard coded
             application.position_id = 36
+            application.project_id = 41
             application.status = "applied"
             application.save()
             return redirect('accounts:applications', pk=request.user.id)

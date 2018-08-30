@@ -93,4 +93,4 @@ class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = models.Applicant
-        exclude = ('position', 'applicant', 'status')
+        exclude = ('position', 'applicant', 'status', 'project')
