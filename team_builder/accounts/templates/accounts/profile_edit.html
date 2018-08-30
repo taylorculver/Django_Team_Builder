@@ -71,14 +71,17 @@
 
       <div class="circle--secondary--module">
         <h4>My Skills</h4>
+          {{ skills_formset.management_form }}
+          {% for form in skills_formset %}
         <ul class="circle--clone--list">
           <li>
 {#            <input type="text" placeholder="Skill" />#}
-              {{ skills_formset }}
+              {{ form }}
             <a class="circle--clone--add">Add Skill</a>
             <a class="circle--clone--remove">Remove</a>
           </li>
         </ul>
+          {% endfor %}
       </div>
 
       <div class="circle--secondary--module">

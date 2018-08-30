@@ -1,39 +1,26 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import CharField, inlineformset_factory, modelform_factory, Textarea
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import (
-    CreateView, DeleteView, DetailView, FormView,
-    TemplateView, UpdateView
-)
-from django.views.generic.edit import FormMixin
+from django.views.generic import DeleteView
 
 from . import forms
 from . import models
 
 
-def project_view(request, pk):
+def view_project(request, pk):
     """Show individual projects and associated positions"""
     project = models.Project.objects.get(id=pk)
     positions = models.Position.objects.filter(project_id=pk)
 
-    # application_form = forms.ApplicationForm()
-    # application_form.fields['applicant'].initial = request.user.id
-
     if request.method == 'POST':
         application_form = forms.ApplicationForm(request.POST)
-        print(application_form)
-        print(application_form.is_valid())
 
         if application_form.is_valid():
             application = application_form.save(commit=False)
             application.applicant_id = request.user.id
-            # bug - these cannot be hard coded
+            # bug - positions cannot be hard coded
             application.position_id = 36
-            application.project_id = 41
+            application.project_id = project.id
             application.status = "applied"
             application.save()
             return redirect('accounts:applications', pk=request.user.id)
@@ -48,35 +35,9 @@ def project_view(request, pk):
         'application_form': application_form
     })
 
-# class Project(FormMixin,  DetailView):
-#     """
-#     Show individual projects and associated positions
-#
-#     Get Context Data for Second Model:
-#     https://docs.djangoproject.com/en/1.9/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data
-#
-#     Obtain Postions Associated with Project Primary Key:
-#     https://stackoverflow.com/questions/25881015/django-queryset-return-single-value
-#
-#     """
-#     queryset = models.Project.objects.all()
-#     template_name = "projects/project.html"
-#     context_object_name = "project"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(Project, self).get_context_data(**kwargs)
-#         context['positions'] = models.Position.objects.filter(project_id=self.kwargs['pk'])
-#         return context
-#
-#     # def post(self, request, *args, **kwargs):
-#     #     context = super(Project, self).get_context_data(**kwargs)
-#     #     context['applications'] = models.Application.objects.filter(applicant_id=self.kwargs['pk'])
-#     #     if context["form"].is_valid():
-#     #         print("yes done")
-#     #     return super(DetailView, self).render_to_response(context)
 
 @login_required
-def EditProject(request, pk):
+def edit_project(request, pk):
     """Edit individual projects"""
     project = get_object_or_404(models.Project, pk=pk)
     print(project.name)
@@ -122,7 +83,7 @@ def EditProject(request, pk):
 
 
 @login_required
-def NewProject(request):
+def new_project(request):
     """Create new instances of Project & Position models
 
     Multiple Forms on Single Page:
@@ -174,7 +135,6 @@ def NewProject(request):
     })
 
 
-# @login_required
 class DiscardProject(DeleteView):
     """
     Discard Existing Projects

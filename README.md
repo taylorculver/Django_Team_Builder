@@ -1,7 +1,6 @@
 # Default account
 
-username: taylorculver
-
+username: dummy
 password: testpassword
 
 # User Stories

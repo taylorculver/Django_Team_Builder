@@ -16,11 +16,11 @@
       <div class="circle--fluid--cell circle--fluid--primary">
         <h2>Profile</h2>
       </div>
-      {% if profile.username_id == user.id %}
+{#      {% if pk == user.id %}#}
         <div class="circle--fluid--cell circle--fluid--secondary">
         <a class="button icon-on-left" href="{% url "accounts:edit_profile" pk=user.id %}">Edit</a>
       </div>
-      {% endif %}
+{#      {% endif %}#}
     </div>
 
     <div class="grid-70">
