@@ -39,9 +39,9 @@ class Application(models.Model):
     )
     position = models.ForeignKey(
         Position,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
-    status = models.CharField(max_length=200)
+    status = models.CharField(max_length=200, default="undecided")
 
     def __str__(self):
         return self.id

@@ -20,7 +20,7 @@ password: testpassword
 - [ ] As a user of the site, I should get a notification if I've been rejected or approved for a position.
 - [x] As a user of the site, I should be able to search for projects based on words in their titles or descriptions.
 - [ ] As a user of the site, I should be able to filter projects by the positions they need filled.
-- [ ] As a user of the site, I should be able to apply for a position in a project.
+- [x] As a user of the site, I should be able to apply for a position in a project.
 - [x] As a user of the site, I should be able to log out.
 
 # Project Files

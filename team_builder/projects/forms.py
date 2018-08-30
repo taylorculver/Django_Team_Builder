@@ -86,3 +86,11 @@ PositionInlineFormSet = forms.inlineformset_factory(
             attrs={'placeholder': 'Position description...'})},
     formset=PositionFormSet
     )
+
+
+class ApplicationForm(forms.ModelForm):
+    # status = forms.CharField(max_length=200)
+
+    class Meta:
+        model = models.Application
+        exclude = ('position', 'applicant', 'status')

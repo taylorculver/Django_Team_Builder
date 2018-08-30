@@ -2,7 +2,10 @@
 {% load bootstrap3 %}
 
 {% block body_content %}
-  <div class="circle--actions--bar">
+  <form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  {% if project.owner_id == user.id %}
+    <div class="circle--actions--bar">
     <div class="bounds">
       <div class="grid-100">
         <a class="button" href="{% url "projects:edit_project" pk=project.pk %}">Edit Project</a>
@@ -10,13 +13,15 @@
       </div>
     </div>
   </div>
+  {% else %}
+  {% endif %}
 
   <div class="bounds circle--page circle--article">
     <div class="grid-70">
       <div class="circle--article--header">
         <h4 class="circle--article--section">Project</h4>
         <h1 class="circle--article--title">{{ project.name }}</h1>
-        <p class="circle--article--byline">Project Owner: <a href="">{{ project.owner }}</a></p>
+{#        <p class="circle--article--byline">Project Owner: <a href="{% url "accounts:profile" pk=project.owner_id%}">{{ project.owner }}</a></p>#}
       </div>
 
       <div class="circle--article--body">
@@ -31,7 +36,8 @@
           <li>
             <h3>{{ position.title }}</h3>
             <p>{{ position.description }}</p>
-            <a class="button button-primary" href="{% url 'accounts:applications' pk=user.id %}">Apply</a>
+              <input type="submit" class="button button-primary" value="Apply">
+{#            <a class="button button-primary" href="{% url 'accounts:applications' pk=user.id %}">Apply</a>#}
           </li>
           {% endfor %}
           <li>
@@ -68,4 +74,5 @@
 
     </div>
   </div>
+  </form>
 {% endblock %}
