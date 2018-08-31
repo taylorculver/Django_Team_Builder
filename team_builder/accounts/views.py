@@ -122,23 +122,30 @@ def edit_profile(request, pk):
 @login_required
 def view_applications(request, pk):
     """See all of the Applicants for my Project's Position(s)"""
-    # query all positions to be filled
-    all_positions = Position.objects.all()
 
-    # query all projects that belong to current logged in user
-    my_projects = Project.objects.filter(owner_id=pk)
+    """PROJECT RELATED QUERIES"""
+    # query all Project(s) that belong to current logged in User
+    my_projects = Project.objects.filter(owner_id=pk).values()
 
-    # build list of all project id's belonging to current logged in user
-    my_projects_values = my_projects.values()
-    my_project_ids = [ids['id'] for ids in my_projects_values]
+    # build list of all Project id's belonging to current logged in User
+    my_project_ids = [ids['id'] for ids in my_projects]
 
-    # query list of all applicants who have applied to my projects
+    """POSITION RELATED FILTERING"""
+    # query all Positions associated with my Projects
+    my_positions = Position.objects.filter(project_id__in=my_project_ids)
+
+    """STATUS RELATED FILTERING"""
+    # canned variables for Applicant(s) status
+    statuses = ["New", "Accepted", "Rejected"]
+
+    """ASSEMBLE FINAL FILTER"""
+    # query list of all Applicant(s) who have applied to current User's Project(s)
     queryset = Applicant.objects.filter(project_id__in=my_project_ids)
 
-    # join related Applicant and Position models to applicants who have applied to my projects
+    # join related Applicant and Position models to Applicant(s) who have applied to current User's Project(s)
     joined_queryset = queryset.select_related("applicant").select_related("position")
 
-    # return values for applicant full name, position title, and project names to return to view
+    # return values for Applicant, id, full name, position title, project name, and status to return to view
     applicants = joined_queryset.values('applicant_id',
                                         'applicant__full_name',
                                         'position__title',
@@ -148,9 +155,10 @@ def view_applications(request, pk):
 
     return render(request, "accounts/applications.html", {
         'pk': pk,
-        'all_positions': all_positions,
         'applicants': applicants,
-        'my_projects': my_projects
+        'my_positions': my_positions,
+        'my_projects': my_projects,
+        'statuses': statuses
     })
 
 
@@ -182,20 +190,21 @@ def filter_applications(request, pk, filter):
     my_filtered_position_ids = [ids['id'] for ids in my_filtered_positions]
 
     """STATUS RELATED FILTERING"""
+    # canned variables for Applicant(s) status
     statuses = ["New", "Accepted", "Rejected"]
 
     """ASSEMBLE FINAL FILTER"""
-    # query list of all applicants who have applied to my projects
+    # query list of all Applicant(s) who have applied to current User's Project(s)
     queryset = Applicant.objects.filter(
         Q(project_id__in=my_filtered_project_ids) |
         Q(position_id__in=my_filtered_position_ids) |
         Q(status=filter)
     )
 
-    # join related Applicant and Position models to applicants who have applied to my projects
+    # join related Applicant and Position models to Applicant(s) who have applied to current User's Project(s)
     joined_queryset = queryset.select_related("applicant").select_related("position")
 
-    # return values for applicant full name, position title, and project names to return to view
+    # return values for Applicant, id, full name, position title, project name, and status to return to view
     applicants = joined_queryset.values('applicant_id',
                                         'applicant__full_name',
                                         'position__title',
