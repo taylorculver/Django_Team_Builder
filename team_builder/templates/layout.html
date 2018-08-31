@@ -40,11 +40,16 @@
       <div class="circle--fluid">
 
         <div class="circle--fluid--cell">
-          <h1 class="hide-text circle--logo"><a class="logo" href="{% url "home" %}">Circle</a></h1>
+            {% if user.is_authenticated %}
+          <h1 class="hide-text circle--logo"><a class="logo" href="{% url "accounts:profile" pk=user.id %}">Circle</a></h1>
+               {% else %}
+                <h1 class="hide-text circle--logo"><a class="logo" href="">Circle</a></h1>
+            {% endif %}
         </div>
 
         <div class="circle--fluid--cell circle--fluid--primary">
-          <div class="circle--search">
+          {% if user.is_authenticated %}
+            <div class="circle--search">
 {#            <input type="text" placeholder="Search Projects..."  name="q">#}
               <input type="text" placeholder="Search Projects..."  name="q">
               <button>
@@ -53,13 +58,14 @@
               </svg>
             </button>
           </div>
+            {% endif %}
         </div>
 
         <div class="circle--fluid--cell circle--fluid--secondary">
           <nav>
             <ul class="circle--inline">
               {% if user.is_authenticated %}
-                  <li><a href="{% url "accounts:profile" pk=user.id %}">Profile</a></li>
+{#                  <li><a href="{% url "accounts:profile" pk=user.id %}">Profile</a></li>#}
                   <li><a href="{% url "accounts:sign_out" %}">Sign Out</a></li>
               {% else %}
                   <li><a href="{% url "accounts:sign_up" %}">Sign Up</a></li>

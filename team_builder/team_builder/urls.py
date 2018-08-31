@@ -25,8 +25,9 @@ urlpatterns = [
     url(r"^accounts/", include("accounts.urls", namespace="accounts")),
     # url(r"^accounts/", include("django.contrib.auth.urls")),
     url(r'^admin/', admin.site.urls),
-    # url(r'^filter/(?P<filter>\w+)/', views.filter, name='filter'),
+    url(r'^filter/(?P<filter>.+?)/$', views.filter, name='filter'),
     url(r'^search/', views.search, name='search'),
+    url(r'^all_projects/', views.all_projects, name='all_projects'),
     url(r'^projects/', include("projects.urls", namespace="projects")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 {% load static from staticfiles %}
-{% load positions_extra %}
 
 
 {% block body_content %}
@@ -22,11 +21,14 @@
     <div class="grid-25">
       <div class="circle--filter circle--secondary--module">
         <h4>Project Needs</h4>
-{#        {% nav_positions_list %}#}
+{#{% nav_positions_list %}#}
         <ul class="circle--filter--list">
-          <li><a class="selected">All Needs</a></li>
+          <li><a class="selected" href="{% url 'all_projects' %}" methods="get">All Needs</a></li>
+{#        {{ project2 }}#}
+{#        {{ positions }}#}
           {% for position in positions %}
-            <li><a>{{ position.title }}</a></li>
+{#            <li><a href="{% url 'filter' filter=filter %}">{{ filter }}</a></li>#}
+              <li><a href="{% url 'filter' filter=position.title %}">{{ position.title }}</a></li>
           {% endfor %}
 {#          <li><a>Designer</a></li>#}
 {#          <li><a>Java Developer</a></li>#}
