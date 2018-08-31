@@ -5,6 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.urlresolvers import reverse
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 from django.shortcuts import render, redirect
 
 from . import models
@@ -120,7 +121,7 @@ def edit_profile(request, pk):
 
 @login_required
 def view_applications(request, pk):
-    """See all of the applicants for my project's positions"""
+    """See all of the Applicants for my Project's Position(s)"""
     # query all positions to be filled
     all_positions = Position.objects.all()
 
@@ -138,7 +139,12 @@ def view_applications(request, pk):
     joined_queryset = queryset.select_related("applicant").select_related("position")
 
     # return values for applicant full name, position title, and project names to return to view
-    applicants = joined_queryset.values('applicant_id', 'applicant__full_name', 'position__title', 'project__name')
+    applicants = joined_queryset.values('applicant_id',
+                                        'applicant__full_name',
+                                        'position__title',
+                                        'project__name',
+                                        'status'
+                                        )
 
     return render(request, "accounts/applications.html", {
         'pk': pk,
@@ -146,3 +152,62 @@ def view_applications(request, pk):
         'applicants': applicants,
         'my_projects': my_projects
     })
+
+
+@login_required
+def filter_applications(request, pk, filter):
+    """Filter for all of the Applicants for my Project's Position(s)"""
+
+    """PROJECT RELATED FILTERING"""
+    # query all Project(s) that belong to current logged in User
+    my_projects = Project.objects.filter(owner_id=pk).values()
+
+    # build list of all Project id's belonging to current logged in User
+    my_project_ids = [ids['id'] for ids in my_projects]
+
+    # filter for all Project(s) that the current User is associated with
+    my_filtered_projects = Project.objects.filter(Q(owner_id=pk) & Q(name__icontains=filter)).values()
+
+    # build list of all Project id's belonging to current logged in User w/ filters applied
+    my_filtered_project_ids = [ids['id'] for ids in my_filtered_projects]
+
+    """POSITION RELATED FILTERING"""
+    # query all Positions associated with my Projects
+    my_positions = Position.objects.filter(project_id__in=my_project_ids)
+
+    # filter for all Positions(s) that the current User is associated with
+    my_filtered_positions = Position.objects.filter(title__icontains=filter).values()
+
+    # build list of all Position id's belonging to current logged in User w/ filters applied
+    my_filtered_position_ids = [ids['id'] for ids in my_filtered_positions]
+
+    """STATUS RELATED FILTERING"""
+    statuses = ["New", "Accepted", "Rejected"]
+
+    """ASSEMBLE FINAL FILTER"""
+    # query list of all applicants who have applied to my projects
+    queryset = Applicant.objects.filter(
+        Q(project_id__in=my_filtered_project_ids) |
+        Q(position_id__in=my_filtered_position_ids) |
+        Q(status=filter)
+    )
+
+    # join related Applicant and Position models to applicants who have applied to my projects
+    joined_queryset = queryset.select_related("applicant").select_related("position")
+
+    # return values for applicant full name, position title, and project names to return to view
+    applicants = joined_queryset.values('applicant_id',
+                                        'applicant__full_name',
+                                        'position__title',
+                                        'project__name',
+                                        'status'
+                                        )
+
+    return render(request, "accounts/applications.html", {
+        'pk': pk,
+        'applicants': applicants,
+        'my_positions': my_positions,
+        'my_projects': my_projects,
+        'statuses': statuses
+    })
+

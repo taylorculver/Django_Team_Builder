@@ -20,7 +20,6 @@ def all_projects(request):
     })
 
 
-
 def search(request):
     """Searches database by Project title or description"""
     term = request.GET.get('q')
