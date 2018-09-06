@@ -21,7 +21,7 @@ def view_project(request, pk):
             # bug - positions cannot be hard coded
             application.position_id = 36
             application.project_id = project.id
-            application.status = "applied"
+            application.status = "new"
             application.save()
             return redirect('accounts:applications', pk=request.user.id)
 

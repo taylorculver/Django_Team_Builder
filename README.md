@@ -14,8 +14,8 @@ password: testpassword
 - [x] As a user of the site, I should be able to create a project that I need help on.
 - [x] As a user of the site, I should be able to specify the positions my project needs help in with a name, a description, and related skill.
 - [x] As a user of the site, I should be able to see all of the applicants for my project's positions.
-- [ ] As a user of the site, I should be able to approve an applicant for a position in my project.
-- [ ] As a user of the site, I should be able to reject an applicant for a position in my project.
+- [x] As a user of the site, I should be able to approve an applicant for a position in my project.
+- [x] As a user of the site, I should be able to reject an applicant for a position in my project.
 - [ ] As a user of the site, I should get a notification if I've been rejected or approved for a position.
 - [x] As a user of the site, I should be able to search for projects based on words in their titles or descriptions.
 - [x] As a user of the site, I should be able to filter projects by the positions they need filled.

@@ -49,7 +49,7 @@ class Applicant(models.Model):
         Project,
         on_delete=models.CASCADE
     )
-    status = models.CharField(max_length=200, default="undecided")
+    status = models.CharField(max_length=200, default="new")
 
     def __str__(self):
         return str(self.applicant_id)

@@ -82,8 +82,16 @@
             </td>
         <td>{{ applicant.status|capfirst }}</td>
         <td>
+<form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+    {% if applicant.status == 'new' %}
             <button class="btn btn-default" type="submit">Approve</button>
-{#            <button class="btn btn-default" type="submit">Reject</button>#}
+    {% elif  applicant.status == 'approved' %}
+            <button class="btn btn-default" type="submit">Reject</button>
+    {% elif applicant.status == 'rejected' %}
+        <button class="btn btn-default" type="submit">Approve</button>
+    {% endif %}
+              </form>
         </td>
           </tr>
         {% endfor %}

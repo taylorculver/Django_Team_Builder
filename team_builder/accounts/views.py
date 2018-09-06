@@ -153,6 +153,30 @@ def view_applications(request, pk):
                                         'status'
                                         )
 
+    if request.method == 'POST':
+        # bug - positions cannot be hard coded
+        application = Applicant.objects.get(position_id=36,
+                                            project_id=41,
+                                            applicant_id=request.user.id
+                                            )
+        application_form = forms.ApplicantStatusForm(request.POST)
+
+        if application_form.is_valid():
+            if application.status == "new":
+                application.status = "approved"
+            elif application.status == "approved":
+                application.status = "rejected"
+            elif application.status == "rejected":
+                application.status = "approved"
+            print(application.status)
+            # bug - positions cannot be hard coded
+            Applicant.objects.update(position_id=36,
+                                     project_id=41,
+                                     status=application.status,
+                                     applicant_id=request.user.id
+                                     )
+            return redirect('accounts:applications', pk=request.user.id)
+
     return render(request, "accounts/applications.html", {
         'pk': pk,
         'applicants': applicants,

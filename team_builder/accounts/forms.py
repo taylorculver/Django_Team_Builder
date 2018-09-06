@@ -2,15 +2,7 @@ from django import forms
 
 
 from . import models
-
-
-# class UserForm(forms.ModelForm):
-#     class Meta:
-#         model = models.User
-#         fields = (
-#             'first_name',
-#             'last_name',
-#         )
+from .apps import Project, Position, Applicant
 
 
 class ProfileForm(forms.ModelForm):
@@ -49,3 +41,11 @@ SkillsInlineFormSet = forms.inlineformset_factory(
     fields=('skill',),
     formset=SkillFormSet
     )
+
+
+class ApplicantStatusForm(forms.ModelForm):
+    # status = forms.CharField(max_length=200)
+
+    class Meta:
+        model = Applicant
+        exclude = ('position', 'applicant', 'status', 'project')
