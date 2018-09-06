@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core import mail
 from django.core.urlresolvers import reverse
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
@@ -175,6 +176,25 @@ def view_applications(request, pk):
                                      status=application.status,
                                      applicant_id=request.user.id
                                      )
+
+            connection = mail.get_connection()
+
+            # Manually open the connection
+            connection.open()
+
+            # Construct an email message that uses the connection
+            email = mail.EmailMessage(
+                subject='Regarding Your Application',
+                body="Your application to blah was {}".format(application.status),
+                from_email='from@teambuilder.com',
+                to=['to@applicant.com'],
+                connection=connection,
+            )
+            email.send()  # Send the email
+
+            # We need to manually close the connection.
+            connection.close()
+
             return redirect('accounts:applications', pk=request.user.id)
 
     return render(request, "accounts/applications.html", {
