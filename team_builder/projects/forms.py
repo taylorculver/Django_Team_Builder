@@ -93,4 +93,6 @@ class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = models.Applicant
-        exclude = ('position', 'applicant', 'status', 'project')
+        exclude = ('position', 'applicant', 'project', 'status')
+
+# ApplicationFormSet = forms.formset_factory()

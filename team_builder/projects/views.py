@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import DeleteView
@@ -11,25 +12,49 @@ def view_project(request, pk):
     """Show individual projects and associated positions"""
     project = models.Project.objects.get(id=pk)
     positions = models.Position.objects.filter(project_id=pk)
+    print(positions)
+    # bug, why is this defaulting to "NEW"
+    applicant = models.Applicant.objects.all().values('status')[0].get('status')
+    # print(applicant.status)
+
+    ApplicantFormSet = formset_factory(forms.ApplicationForm)
 
     if request.method == 'POST':
-        application_form = forms.ApplicationForm(request.POST)
+        application_form = ApplicantFormSet(request.POST)
 
         if application_form.is_valid():
-            application = application_form.save(commit=False)
-            application.applicant_id = request.user.id
-            # bug - positions cannot be hard coded
-            application.position_id = 36
-            application.project_id = project.id
-            application.status = "new"
-            application.save()
+            for application in application_form:
+                # BUG
+                position_id = 36
+                project_id = project.id
+                applicant_id = request.user.id
+                status = "new"
+                applicant = models.Applicant(position_id=position_id, project_id=project_id, applicant_id=applicant_id, status=status)
+                applicant.save()
             return redirect('accounts:applications', pk=request.user.id)
 
     else:
-        application_form = forms.ApplicationForm()
+        application_form = ApplicantFormSet()
+
+    # if request.method == 'POST':
+    #     application_form = forms.ApplicationForm(request.POST)
+    #
+    #     if application_form.is_valid():
+    #         application = application_form.save(commit=False)
+    #         application.applicant_id = request.user.id
+    #         # bug - positions cannot be hard coded
+    #         application.position_id = 36
+    #         application.project_id = project.id
+    #         application.status = "new"
+    #         application.save()
+    #         return redirect('accounts:applications', pk=request.user.id)
+
+    # else:
+    #     application_form = forms.ApplicationForm()
 
     return render(request, 'projects/project.html', {
         'pk': pk,
+        'applicant': applicant,
         'project': project,
         'positions': positions,
         'application_form': application_form

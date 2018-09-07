@@ -123,35 +123,20 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-
 STATIC_URL = '/static/'
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
 
 INTERNAL_IPS = ['127.0.0.1']  # must add internal IPS for Django debug toolbar
 
-'''Used to submit data to base user model and reroute back to profile page'''
+# Used to submit data to base user model and reroute back to profile page
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: "/accounts/%s/" % u.username,
 }
 
+# Necessary to upload profile images
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'assets')
 
-# to send emails
+# Necessary to Send Emails
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
-
-# AUTHENTICATION_BACKENDS = (
-#     "django.contrib.auth.backends.ModelBackend",
-#     "allauth.account.auth_backends.AuthenticationBackend",
-# )
-#
-# SITE_ID = 1
-#
-#
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_EMAIL_VERIFICATION = True
-# ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True

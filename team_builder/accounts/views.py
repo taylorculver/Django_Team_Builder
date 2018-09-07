@@ -164,11 +164,11 @@ def view_applications(request, pk):
 
         if application_form.is_valid():
             if application.status == "new":
-                application.status = "approved"
-            elif application.status == "approved":
+                application.status = "accepted"
+            elif application.status == "accepted":
                 application.status = "rejected"
             elif application.status == "rejected":
-                application.status = "approved"
+                application.status = "accepted"
             print(application.status)
             # bug - positions cannot be hard coded
             Applicant.objects.update(position_id=36,
@@ -183,6 +183,7 @@ def view_applications(request, pk):
             connection.open()
 
             # Construct an email message that uses the connection
+            """https://docs.djangoproject.com/en/1.9/topics/email/#emailmessage-objects"""
             email = mail.EmailMessage(
                 subject='Regarding Your Application',
                 body="Your application to blah was {}".format(application.status),
@@ -237,12 +238,20 @@ def filter_applications(request, pk, filter):
     # canned variables for Applicant(s) status
     statuses = ["New", "Accepted", "Rejected"]
 
+    # query all Applicants associated with my Projects
+    my_applications = Applicant.objects.filter(Q(project_id__in=my_project_ids) &
+                                               Q(status__icontains=filter)
+                                               ).values()
+
+    # build list of all Applicant id's belonging to current logged in User w/ filters applied
+    my_application_ids = [ids['id'] for ids in my_applications]
+
     """ASSEMBLE FINAL FILTER"""
     # query list of all Applicant(s) who have applied to current User's Project(s)
     queryset = Applicant.objects.filter(
         Q(project_id__in=my_filtered_project_ids) |
         Q(position_id__in=my_filtered_position_ids) |
-        Q(status=filter)
+        Q(id__in=my_application_ids)
     )
 
     # join related Applicant and Position models to Applicant(s) who have applied to current User's Project(s)

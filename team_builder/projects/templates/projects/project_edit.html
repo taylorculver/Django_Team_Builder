@@ -2,7 +2,7 @@
 {% load bootstrap3 %}
 
 {% block body_content %}
-{% if project.owner_id == user.id %}
+{#{% if project.owner_id == user.id %}#}
         <form method="POST">
     {% csrf_token %}
   <div class="circle--actions--bar">
@@ -64,7 +64,7 @@
     </div>
   </div>
 </form>
-{% else %}
-    "NOTHING HERE"
-{% endif %}
+{#{% else %}#}
+{#    "NOTHING HERE"#}
+{#{% endif %}#}
 {% endblock %}
