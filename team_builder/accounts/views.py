@@ -80,6 +80,7 @@ def view_profile(request, pk):
 
     # query all Skills associated with logged in User's Profile
     skills = models.Skill.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
+
     return render(request, "accounts/profile.html", {
         'pk': pk,
         'user': user,
@@ -100,22 +101,31 @@ def edit_profile(request, pk):
     skills_formset = inlineformset_factory(models.Profile, models.Skill, fields=('skill',), max_num=1, can_delete=False)
     profile_form = forms.ProfileForm(instance=user.profile)
 
+    # query all Skills associated with logged in User's Profile
+    skills = models.Skill.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
+
     if request.method == 'POST':
         profile_form = forms.ProfileForm(instance=user.profile,
                                          data=request.POST,
                                          files=request.FILES)
 
         skills_formset = skills_formset(request.POST, request.FILES, instance=profile)
+        # print(skills_formset)
 
-        if profile_form.is_valid() and skills_formset.is_valid():
+        if profile_form.is_valid():
             profile_form.save()
-            skills_formset.save()
+
+            if skills_formset.is_valid():
+                for skills in skills_formset:
+                    print(skills)
+                    skills.save()
             return redirect('accounts:profile', pk=pk)
 
     return render(request, 'accounts/profile_edit.html', {
         'profile_form': profile_form,
         'pk': pk,
         'projects': projects,
+        'skills': skills,
         'skills_formset': skills_formset
     })
 
@@ -151,6 +161,7 @@ def view_applications(request, pk):
                                         'applicant__full_name',
                                         'position__title',
                                         'project__name',
+                                        'project__id',
                                         'status'
                                         )
 
@@ -169,7 +180,7 @@ def view_applications(request, pk):
                 application.status = "rejected"
             elif application.status == "rejected":
                 application.status = "accepted"
-            print(application.status)
+            # print(application.status)
             # bug - positions cannot be hard coded
             Applicant.objects.update(position_id=36,
                                      project_id=41,
@@ -254,6 +265,8 @@ def filter_applications(request, pk, filter):
         Q(id__in=my_application_ids)
     )
 
+    # print(queryset)
+
     # join related Applicant and Position models to Applicant(s) who have applied to current User's Project(s)
     joined_queryset = queryset.select_related("applicant").select_related("position")
 
@@ -262,8 +275,54 @@ def filter_applications(request, pk, filter):
                                         'applicant__full_name',
                                         'position__title',
                                         'project__name',
+                                        'project__id',
                                         'status'
                                         )
+
+    # print(applicants)
+    if request.method == 'POST':
+        # bug - positions cannot be hard coded
+        application = Applicant.objects.get(position_id=36,
+                                            project_id=41,
+                                            applicant_id=request.user.id
+                                            )
+        application_form = forms.ApplicantStatusForm(request.POST)
+
+        if application_form.is_valid():
+            if application.status == "new":
+                application.status = "accepted"
+            elif application.status == "accepted":
+                application.status = "rejected"
+            elif application.status == "rejected":
+                application.status = "accepted"
+            # print(application.status)
+            # bug - positions cannot be hard coded
+            Applicant.objects.update(position_id=36,
+                                     project_id=41,
+                                     status=application.status,
+                                     applicant_id=request.user.id
+                                     )
+
+            connection = mail.get_connection()
+
+            # Manually open the connection
+            connection.open()
+
+            # Construct an email message that uses the connection
+            """https://docs.djangoproject.com/en/1.9/topics/email/#emailmessage-objects"""
+            email = mail.EmailMessage(
+                subject='Regarding Your Application',
+                body="Your application to blah was {}".format(application.status),
+                from_email='from@teambuilder.com',
+                to=['to@applicant.com'],
+                connection=connection,
+            )
+            email.send()  # Send the email
+
+            # We need to manually close the connection.
+            connection.close()
+
+            return redirect('accounts:applications', pk=request.user.id)
 
     return render(request, "accounts/applications.html", {
         'pk': pk,

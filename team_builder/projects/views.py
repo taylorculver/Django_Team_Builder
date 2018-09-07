@@ -12,11 +12,15 @@ def view_project(request, pk):
     """Show individual projects and associated positions"""
     project = models.Project.objects.get(id=pk)
     positions = models.Position.objects.filter(project_id=pk)
-    print(positions)
-    # bug, why is this defaulting to "NEW"
-    applicant = models.Applicant.objects.all().values('status')[0].get('status')
-    # print(applicant.status)
 
+    queryset = models.Applicant.objects.filter(project_id=project)
+    joined_queryset = queryset.select_related("user")
+
+    # full_user_name = joined_queryset.values('applicant__full_name',)[0].get('applicant__full_name')
+
+    # # bug, why is this defaulting to "NEW"
+    # applicant = models.Applicant.objects.all().values('status')[0].get('status')
+    # # print(applicant.status)
     ApplicantFormSet = formset_factory(forms.ApplicationForm)
 
     if request.method == 'POST':
@@ -54,7 +58,7 @@ def view_project(request, pk):
 
     return render(request, 'projects/project.html', {
         'pk': pk,
-        'applicant': applicant,
+        # 'full_user_name': full_user_name,
         'project': project,
         'positions': positions,
         'application_form': application_form

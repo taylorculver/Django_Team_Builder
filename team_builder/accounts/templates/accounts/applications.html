@@ -41,7 +41,7 @@
       <div class="circle--filter circle--secondary--module">
         <h4>Project Needs</h4>
         <ul class="circle--filter--list">
-          <li><a class="selected">All Needs</a></li>
+          <li><a class="selected" href="{% url "accounts:applications" pk=user.id %}">All Needs</a></li>
           {% for position in my_positions %}
             <li><a href="{% url 'accounts:filter_applications' pk=user.id filter=position.title %}">{{ position.title }}</a></li>
             {% endfor %}
@@ -51,6 +51,7 @@
     </div>
 
     <div class="grid-70 grid-push-5">
+      {% if applicants %}
       <table class="u-full-width circle--table">
         <thead>
           <tr>
@@ -62,7 +63,7 @@
         </thead>
         <tbody>
         {% for applicant in applicants %}
-        <tr class="clickable-row" data-href="">
+        <tr class="clickable-row" data-href="{% url 'projects:project' pk=applicant.project__id %}">
             <td>
               <h3>{{ applicant.applicant__full_name }}</h3>
               <p>{{ applicant.project__name }}</p>
@@ -87,6 +88,19 @@
         {% endfor %}
         </tbody>
       </table>
+      {% else %}
+      <table class="u-full-width circle--table">
+        <thead>
+          <tr>
+            <th>Applicant</th>
+            <th class="circle--cell--right">Applicant Position</th>
+              <th class="circle--cell--right">Status</th>
+            <th class="circle--cell--right">Action</th>
+          </tr>
+        </thead>
+      </table>
+          <p>No Applicants Meet this Criteria, Please Try Again Later!</p>
+      {% endif %}
 
     </div>
 
