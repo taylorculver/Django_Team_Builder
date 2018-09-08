@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from . import models
 from . import forms
@@ -94,38 +94,40 @@ def edit_profile(request, pk):
     """Edit User Profile"""
     user = models.User.objects.get(pk=pk)
     projects = Project.objects.filter(owner_id=pk)
-    profile = models.Profile.objects.get(username_id=pk)
+    profile = get_object_or_404(models.Profile, username_id=pk)
+    print(type(profile))
 
     # BUG when posting multiple formset forms
 
-    skills_formset = inlineformset_factory(models.Profile, models.Skill, fields=('skill',), max_num=1, can_delete=False)
+    skills_formset = forms.SkillFormSet(queryset=profile.skill_set.all())
     profile_form = forms.ProfileForm(instance=user.profile)
-
-    # query all Skills associated with logged in User's Profile
-    skills = models.Skill.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
 
     if request.method == 'POST':
         profile_form = forms.ProfileForm(instance=user.profile,
                                          data=request.POST,
                                          files=request.FILES)
 
-        skills_formset = skills_formset(request.POST, request.FILES, instance=profile)
+        skills_formset = forms.SkillFormSet(request.POST,
+                                            queryset=profile.skill_set.all())
         # print(skills_formset)
 
-        if profile_form.is_valid():
+        if profile_form.is_valid() and skills_formset.is_valid():
             profile_form.save()
 
-            if skills_formset.is_valid():
-                for skills in skills_formset:
-                    print(skills)
-                    skills.save()
-            return redirect('accounts:profile', pk=pk)
+            skills = skills_formset.save(commit=False)
+
+            for skill in skills:
+                print(skill)
+                skill.profile_id = profile.id
+                print(profile)
+                skill.save()
+
+        return redirect('accounts:profile', pk=pk)
 
     return render(request, 'accounts/profile_edit.html', {
         'profile_form': profile_form,
         'pk': pk,
         'projects': projects,
-        'skills': skills,
         'skills_formset': skills_formset
     })
 

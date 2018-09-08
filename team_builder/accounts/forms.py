@@ -12,6 +12,7 @@ class ProfileForm(forms.ModelForm):
             'full_name',
             'description',
             'avatar',
+            # 'url'
         )
 
 
@@ -28,19 +29,20 @@ class SkillForm(forms.ModelForm):
 
 #  formset needed to feed into formset factory
 SkillFormSet = forms.modelformset_factory(
-    models.Skill,
+    model=models.Skill,
     form=SkillForm,
+    # extra=3
 )
 
 # formset factory needed to process multiple Position objects per Project object
-SkillsInlineFormSet = forms.inlineformset_factory(
-    model=models.Skill,
-    parent_model=models.Profile,
-    can_delete=False,
-    extra=1,
-    fields=('skill',),
-    formset=SkillFormSet
-    )
+# SkillsInlineFormSet = forms.inlineformset_factory(
+#     model=models.Skill,
+#     parent_model=models.Profile,
+#     can_delete=False,
+#     extra=1,
+#     fields=('skill',),
+#     formset=SkillFormSet
+#     )
 
 
 class ApplicantStatusForm(forms.ModelForm):
