@@ -21,7 +21,7 @@
       <div class="circle--article--header">
         <h4 class="circle--article--section">Project</h4>
         <h1 class="circle--article--title">{{ project.name }}</h1>
-{#        <p class="circle--article--byline">Project Owner: <a href="{% url "accounts:profile" pk=project.owner_id%}">{{ full_user_name }}</a></p>#}
+        <p class="circle--article--byline">Project Owner: <a href="{% url "accounts:profile" pk=project.owner_id%}">{{ user.profile.full_name }}</a></p>
       </div>
 
       <div class="circle--article--body">
@@ -60,7 +60,7 @@
         <h3>Project Needs</h3>
         <ul class="circle--link--list">
             {% for position in positions %}
-                <li><a>{{ position.title }}</a></li>
+                <li><a href="">{{ position.title }}</a></li>
             {% endfor %}
         </ul>
       </div>
