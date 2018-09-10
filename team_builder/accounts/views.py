@@ -119,7 +119,7 @@ def edit_profile(request, pk):
 
     if request.method == 'POST':
         # FOR DEBUGGING
-        pdb.set_trace()
+        # pdb.set_trace()
         # print(request.POST.copy())
 
         profile_form = forms.ProfileForm(instance=user.profile,
@@ -138,20 +138,23 @@ def edit_profile(request, pk):
 
         # print(github_formset)
 
+        # BUG SKILLS FORMSET IS NOT VALID
+        # <ul class="errorlist nonfield"><li>(Hidden field id) Select a valid choice. That choice is not one of the available choices.</li>
+
         if profile_form.is_valid() and skills_formset.is_valid() and github_formset.is_valid():
             profile_form.save()
 
             skills = skills_formset.save(commit=False)
-            print(skills)
+            # print(skills)
             for skill in skills:
                 # associate each Skill with a User's Profile
                 skill.profile_id = profile.id
                 skill.save()
 
             githubs = github_formset.save(commit=False)
-            print(githubs)
+            # print(githubs)
             for github in githubs:
-                print(github)
+                # print(github)
                 # associate each Github with a User's Profile
                 github.profile_id = profile.id
                 github.save()
