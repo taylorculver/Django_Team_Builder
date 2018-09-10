@@ -36,6 +36,19 @@ class Skill(models.Model):
         return self.skill
 
 
+class GitHub(models.Model):
+    """Model for listing user GitHub Projects"""
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE
+    )
+    github_project = models.CharField(max_length=200)
+    github_url = models.URLField()
+
+    def __str__(self):
+        return self.github_project
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:

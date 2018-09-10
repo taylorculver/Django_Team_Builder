@@ -38,6 +38,23 @@ SkillFormSet = forms.modelformset_factory(
 )
 
 
+class GitHubForm(forms.ModelForm):
+    """Form to add GitHub projects to profile"""
+    class Meta:
+        model = models.GitHub
+        fields = (
+            'github_project',
+            'github_url',
+        )
+
+
+#  formset needed to feed into model formset factory
+GitHubFormSet = forms.modelformset_factory(
+    model=models.GitHub,
+    form=GitHubForm,
+)
+
+
 class ApplicantStatusForm(forms.ModelForm):
 
     class Meta:

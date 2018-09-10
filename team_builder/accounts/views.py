@@ -84,10 +84,14 @@ def view_profile(request, pk):
     # query all Skills associated with logged in User's Profile
     skills = models.Skill.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
 
+    # query all GitHub Projects associated with logged in User's Profile
+    githubs = models.GitHub.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
+
     return render(request, "accounts/profile.html", {
+        'githubs': githubs,
         'pk': int(pk),
-        'user': user,
         'projects': projects,
+        'user': user,
         'skills': skills
     })
 
@@ -107,13 +111,16 @@ def edit_profile(request, pk):
     # generate Skills Formset
     skills_formset = forms.SkillFormSet(queryset=profile.skill_set.all())
 
-    # Generate Profile form
+    # generate GitHub Formset
+    github_formset = forms.GitHubFormSet(queryset=profile.github_set.all())
+
+    # generate Profile form
     profile_form = forms.ProfileForm(instance=user.profile)
 
     if request.method == 'POST':
         # FOR DEBUGGING
-        # pdb.set_trace()
-        # request.POST.copy()
+        pdb.set_trace()
+        # print(request.POST.copy())
 
         profile_form = forms.ProfileForm(instance=user.profile,
                                          data=request.POST,
@@ -124,20 +131,37 @@ def edit_profile(request, pk):
                                             queryset=profile.skill_set.all(),
                                             )
 
-        if profile_form.is_valid() and skills_formset.is_valid():
+
+        github_formset = forms.GitHubFormSet(request.POST,
+                                             queryset=profile.github_set.all(),
+                                             )
+
+        # print(github_formset)
+
+        if profile_form.is_valid() and skills_formset.is_valid() and github_formset.is_valid():
             profile_form.save()
 
             skills = skills_formset.save(commit=False)
+            print(skills)
             for skill in skills:
-                # associate each skill with a User's Profile
+                # associate each Skill with a User's Profile
                 skill.profile_id = profile.id
                 skill.save()
+
+            githubs = github_formset.save(commit=False)
+            print(githubs)
+            for github in githubs:
+                print(github)
+                # associate each Github with a User's Profile
+                github.profile_id = profile.id
+                github.save()
 
         return redirect('accounts:profile', pk=pk)
 
     return render(request, 'accounts/profile_edit.html', {
-        'profile_form': profile_form,
+        'github_formset': github_formset,
         'pk': pk,
+        'profile_form': profile_form,
         'projects': projects,
         'skills_formset': skills_formset
     })

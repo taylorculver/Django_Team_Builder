@@ -74,9 +74,9 @@
       <div class="circle--secondary--module">
         <h4>My GitHub Projects</h4>
         <ul class="circle--link--list">
-{#          {% for project in projects %}#}
-{#            <li><a>{{ project.name }}</a></li>#}
-{#          {% endfor %}#}
+          {% for github in githubs %}
+            <li><a href="{{ github.github_url }}">{{ github }}</a></li>
+          {% endfor %}
         </ul>
       </div>
     </div>

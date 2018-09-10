@@ -79,14 +79,15 @@
 
       <div class="circle--secondary--module">
         <h4>My Github Projects</h4>
-        <ul class="circle--clone--list">
+        {{ github_formset.management_form }}
+        {{ github_formset.non_form_errors }}
+        {% for githubs in github_formset %}
+        <ul id="githubs" class="circle--clone--list">
           <li>
-            <input type="text" placeholder="Project Name" />
-            <input type="text" placeholder="Project URL" />
-            <a class="circle--clone--add">Add Project</a>
-            <a class="circle--clone--remove">Remove</a>
+              {{ githubs.id }}{{ githubs.github_project }}{{ githubs.github_url }}
           </li>
         </ul>
+        {% endfor %}
       </div>
 
     </div>
@@ -95,6 +96,14 @@
         $('#skills li').formset({
           addText: 'Add Skill',
           deleteText: 'Remove Skill',
+          addCssClass: 'circle--clone--add',
+          deleteCssClass: 'circle--clone--remove'
+        });
+      </script>
+      <script>
+        $('#githubs li').formset({
+          addText: 'Add GitHub Repo',
+          deleteText: 'Remove GitHub Repo',
           addCssClass: 'circle--clone--add',
           deleteCssClass: 'circle--clone--remove'
         });
