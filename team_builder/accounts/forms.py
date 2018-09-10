@@ -31,6 +31,7 @@ class SkillForm(forms.ModelForm):
 SkillFormSet = forms.modelformset_factory(
     model=models.Skill,
     form=SkillForm,
+    # fields='__all__'
     # extra=3
 )
 
