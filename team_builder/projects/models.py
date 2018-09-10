@@ -4,6 +4,7 @@ from django.db import models
 
 from accounts.models import Profile
 
+
 class Project(models.Model):
     """Model for user-created project"""
     name = models.CharField(max_length=200)
@@ -14,7 +15,7 @@ class Project(models.Model):
     description = models.TextField()
     timeline = models.TextField()
     requirements = models.TextField()
-    url = models.TextField()
+    # url = models.TextField()
 
     def __str__(self):
         return self.name
@@ -25,7 +26,6 @@ class Position(models.Model):
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        # related_name="position"
     )
     title = models.CharField(max_length=200)
     description = models.TextField()

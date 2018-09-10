@@ -16,25 +16,21 @@
       <div class="bounds circle--page circle--article">
         <div class="grid-70">
           <div class="circle--article--body">
-{#            <input id="id_name" name="name" type="text" class="circle--input--h1" placeholder="Project Title" />#}
               {{ project_form.name }}
               {{ project_form.description }}
-{#              <input id="id_description" name="description" type="text" placeholder="Project description..." />#}
-{#            <textarea placeholder="Project description..."></textarea>#}
           </div>
 
           <div class="circle--project--positions">
             <h2>Positions</h2>
-{#              {{ position_formset.management_form }}#}
-              <ul class="circle--group--list circle--clone--list">
+              {{ position_formset.management_form }}
+              {{ position_formset.non_form_errors }}
+              {% for position in position_formset %}
+              <ul id="positions" class="circle--group--list circle--clone--list">
                   <li>
-{#                      <input type="text" class="circle--input--h3" placeholder="Position Title" />#}
-{#                      <textarea placeholder="Position description..."></textarea>#}
-                      {{ position_formset }}
-                      <a class="circle--clone--add">Add Position</a>
-                      <a class="circle--clone--remove">Remove</a>
+                      {{ position.id }}{{ position.title }}{{ position.description }}
                   </li>
               </ul>
+              {% endfor %}
             <input type="submit" class="button button-primary" value="Save Project">
           </div>
         </div>
@@ -44,16 +40,22 @@
           <div class="circle--secondary--module">
             <h3>Project Timeline</h3>
               {{ project_form.timeline }}
-{#            <textarea placeholder="Time estimate" class="circle--textarea--input"></textarea>#}
           </div>
 
           <div class="circle--secondary--module">
             <h3>Applicant Requirements</h3>
               {{ project_form.requirements }}
-{#            <textarea></textarea>#}
           </div>
 
         </div>
       </div>
+      <script>
+        $('#positions li').formset({
+          addText: 'Add Position',
+          deleteText: 'Remove Position',
+          addCssClass: 'circle--clone--add',
+          deleteCssClass: 'circle--clone--remove'
+        });
+      </script>
     </form>
 {% endblock %}
