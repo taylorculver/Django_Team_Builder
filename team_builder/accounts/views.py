@@ -85,7 +85,7 @@ def view_profile(request, pk):
     skills = models.Skill.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
 
     return render(request, "accounts/profile.html", {
-        'pk': pk,
+        'pk': int(pk),
         'user': user,
         'projects': projects,
         'skills': skills
@@ -95,60 +95,43 @@ def view_profile(request, pk):
 @login_required
 def edit_profile(request, pk):
     """Edit User Profile"""
+    # obtain current logged in User
     user = models.User.objects.get(pk=pk)
+
+    # obtain all Project(s) for logged in User
     projects = Project.objects.filter(owner_id=pk)
+
+    # obtain associated Profile for logged in User
     profile = get_object_or_404(models.Profile, username_id=pk)
-    # print(type(profile))
 
-    # BUG when posting multiple formset forms
-
+    # generate Skills Formset
     skills_formset = forms.SkillFormSet(queryset=profile.skill_set.all())
+
+    # Generate Profile form
     profile_form = forms.ProfileForm(instance=user.profile)
 
     if request.method == 'POST':
+        # FOR DEBUGGING
         # pdb.set_trace()
+        # request.POST.copy()
 
         profile_form = forms.ProfileForm(instance=user.profile,
                                          data=request.POST,
+                                         # files are necessary since we're sending over an image
                                          files=request.FILES)
 
         skills_formset = forms.SkillFormSet(request.POST,
                                             queryset=profile.skill_set.all(),
                                             )
-        # test = request.POST.copy()
-        # print(test)
-        # print(test['form-6-id'])
-        # print(skills_formset.as_p())
-        # print(skills_formset)
 
         if profile_form.is_valid() and skills_formset.is_valid():
             profile_form.save()
+
             skills = skills_formset.save(commit=False)
-            # print(skills_formset.as_p())
-            for form in skills_formset:
-                # print(len(skills_formset))
-                # formset_dictionary_copy = request.POST.copy()
-                # print(form.cleaned_data.get('id'))
-                # print(formset_dictionary_copy)
-                for skill in skills:
-
-                    # print(skill.cleaned_data.get('id'))
-                    # skills = skills_formset.save(commit=False)
-
-                    # formset_dictionary_copy['form-TOTAL_FORMS'] = int(formset_dictionary_copy['form-TOTAL_FORMS']) + 1
-                    # print(formset_dictionary_copy['form-TOTAL_FORMS'])
-                    # print(formset_dictionary_copy['form-0-skill'])
-
-                    #     # int(formset_dictionary_copy['form-TOTAL_FORMS'] + extra_forms)
-                    # formset = skills_formset(formset_dictionary_copy)
-                    # print(skill.as_p())
-                    # skill.id =
-                    # print(request.POST.copy()['form-2-id'])
-                    # print(skill.profile_id)
-                    # id = 1
-                    skill.profile_id = profile.id
-                    # print(profile)
-                    skill.save()
+            for skill in skills:
+                # associate each skill with a User's Profile
+                skill.profile_id = profile.id
+                skill.save()
 
         return redirect('accounts:profile', pk=pk)
 

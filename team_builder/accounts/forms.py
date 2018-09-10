@@ -1,11 +1,11 @@
 from django import forms
 
-
 from . import models
-from .apps import Project, Position, Applicant
+from .apps import Applicant
 
 
 class ProfileForm(forms.ModelForm):
+    """Form used as the basis for adding data elements to User model"""
     class Meta:
         model = models.Profile
         fields = (
@@ -16,10 +16,14 @@ class ProfileForm(forms.ModelForm):
         )
 
 
-# Skills Form
 class SkillForm(forms.ModelForm):
-    skill = forms.CharField(max_length=200)
+    """
 
+    Form used as the basis of adding Skills
+
+    https://whoisnicoleharris.com/2015/01/06/implementing-django-formsets.html
+
+    """
     class Meta:
         model = models.Skill
         fields = (
@@ -27,27 +31,14 @@ class SkillForm(forms.ModelForm):
         )
 
 
-#  formset needed to feed into formset factory
+#  formset needed to feed into model formset factory
 SkillFormSet = forms.modelformset_factory(
     model=models.Skill,
     form=SkillForm,
-    # fields='__all__'
-    # extra=3
 )
-
-# formset factory needed to process multiple Position objects per Project object
-# SkillsInlineFormSet = forms.inlineformset_factory(
-#     model=models.Skill,
-#     parent_model=models.Profile,
-#     can_delete=False,
-#     extra=1,
-#     fields=('skill',),
-#     formset=SkillFormSet
-#     )
 
 
 class ApplicantStatusForm(forms.ModelForm):
-    # status = forms.CharField(max_length=200)
 
     class Meta:
         model = Applicant
