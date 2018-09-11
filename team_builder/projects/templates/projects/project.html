@@ -21,7 +21,7 @@
       <div class="circle--article--header">
         <h4 class="circle--article--section">Project</h4>
         <h1 class="circle--article--title">{{ project.name }}</h1>
-        <p class="circle--article--byline">Project Owner: <a href="{% url "accounts:profile" pk=project.owner_id%}">{{ user.profile.full_name }}</a></p>
+        <p class="circle--article--byline">Project Owner: <a href="{% url "accounts:profile" pk=project.owner_id%}">{{ project.owner.profile.full_name }}</a></p>
       </div>
 
       <div class="circle--article--body">

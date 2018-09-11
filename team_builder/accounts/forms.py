@@ -75,8 +75,7 @@ class GitHubForm(forms.ModelForm):
         )
     )
 
-    github_url = forms.CharField(
-        max_length=200,
+    github_url = forms.URLField(
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Project URL',

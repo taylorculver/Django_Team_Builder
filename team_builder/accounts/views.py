@@ -109,10 +109,14 @@ def edit_profile(request, pk):
     profile = get_object_or_404(models.Profile, username_id=pk)
 
     # generate Skills Formset
-    skills_formset = forms.SkillFormSet(queryset=profile.skill_set.all())
+    skills_formset = forms.SkillFormSet(queryset=profile.skill_set.all(),
+                                        # prefix required for multiple formsets on a single page
+                                        prefix='skills_formset')
 
     # generate GitHub Formset
-    github_formset = forms.GitHubFormSet(queryset=profile.github_set.all())
+    github_formset = forms.GitHubFormSet(queryset=profile.github_set.all(),
+                                         # prefix required for multiple formsets on a single page
+                                         prefix='github_formset')
 
     # generate Profile form
     profile_form = forms.ProfileForm(instance=user.profile)
@@ -129,11 +133,14 @@ def edit_profile(request, pk):
 
         skills_formset = forms.SkillFormSet(request.POST,
                                             queryset=profile.skill_set.all(),
+                                            # prefix required for multiple formsets on a single page
+                                            prefix='skills_formset',
                                             )
-
 
         github_formset = forms.GitHubFormSet(request.POST,
                                              queryset=profile.github_set.all(),
+                                             # prefix required for multiple formsets on a single page
+                                             prefix='github_formset'
                                              )
 
         # print(github_formset)
