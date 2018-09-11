@@ -13,58 +13,42 @@ import pdb
 
 def view_project(request, pk):
     """Show individual projects and associated positions"""
+    # returns current Project
     project = models.Project.objects.get(id=pk)
+
+    # returns all Positions associated with project
     positions = models.Position.objects.filter(project_id=pk)
 
-    queryset = models.Applicant.objects.filter(project_id=project)
-    joined_queryset = queryset.select_related("user")
-
-    # full_user_name = joined_queryset.values('applicant__full_name',)[0].get('applicant__full_name')
-
-    # # bug, why is this defaulting to "NEW"
-    # applicant = models.Applicant.objects.all().values('status')[0].get('status')
-    # # print(applicant.status)
-    ApplicantFormSet = formset_factory(forms.ApplicationForm)
+    # Returns Applicant Status Form
+    application_form = forms.ApplicantStatusForm()
 
     if request.method == 'POST':
-        application_form = ApplicantFormSet(request.POST)
+        # FOR DEBUGGING
+        # pdb.set_trace()
+        # print(request.POST.copy())
+
+        application_form = forms.ApplicantStatusForm(data=request.POST)
+
+        print(application_form.is_valid())
 
         if application_form.is_valid():
-            for application in application_form:
-                # BUG
-                position_id = 36
-                project_id = project.id
-                applicant_id = request.user.id
-                status = "new"
-                applicant = models.Applicant(position_id=position_id, project_id=project_id, applicant_id=applicant_id, status=status)
-                applicant.save()
-            return redirect('accounts:applications', pk=request.user.id)
+            application_form.save(commit=False)
+            project_id = project.id
+            applicant_id = request.user.id
 
-    else:
-        application_form = ApplicantFormSet()
+            # https://stackoverflow.com/questions/12698268/additional-post-data-for-django
+            position_id = request.POST['position_id']
+            models.Applicant.objects.get_or_create(project_id=project_id,
+                                                   applicant_id=applicant_id,
+                                                   position_id=position_id)
 
-    # if request.method == 'POST':
-    #     application_form = forms.ApplicationForm(request.POST)
-    #
-    #     if application_form.is_valid():
-    #         application = application_form.save(commit=False)
-    #         application.applicant_id = request.user.id
-    #         # bug - positions cannot be hard coded
-    #         application.position_id = 36
-    #         application.project_id = project.id
-    #         application.status = "new"
-    #         application.save()
-    #         return redirect('accounts:applications', pk=request.user.id)
-
-    # else:
-    #     application_form = forms.ApplicationForm()
+        return redirect('accounts:applications', pk=request.user.id)
 
     return render(request, 'projects/project.html', {
+        'application_form': application_form,
         'pk': pk,
-        # 'full_user_name': full_user_name,
         'project': project,
         'positions': positions,
-        'application_form': application_form
     })
 
 
@@ -90,15 +74,15 @@ def edit_project(request, pk):
             # must collect logged in userid to ensure referential integrity to User model
             project = project_form.save(commit=False)
             project.owner_id = request.user.id
-            project.save()
+            models.Project.objects.get_or_create(pk=pk)
 
             # must collect projectid to ensure referential integrity to the Project model
             positions = position_formset.save(commit=False)
             for position in positions:
-                position.project_id = project.id
+                position.project_id = pk
                 position.save()
 
-            return redirect('projects:project', pk=project.pk)
+            return redirect('projects:project', pk=pk)
 
     return render(request, 'projects/project_edit.html', {
         'project_form': project_form,

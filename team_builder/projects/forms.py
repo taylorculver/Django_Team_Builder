@@ -71,9 +71,8 @@ PositionFormSet = forms.modelformset_factory(
 )
 
 
-class ApplicationForm(forms.ModelForm):
-    # status = forms.CharField(max_length=200)
-
+class ApplicantStatusForm(forms.ModelForm):
+    """Form for User to apply to Position"""
     class Meta:
         model = models.Applicant
         exclude = ('position', 'applicant', 'project', 'status')

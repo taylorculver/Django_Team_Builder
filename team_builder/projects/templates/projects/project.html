@@ -38,16 +38,21 @@
             <li>
             <h3>{{ position.title }}</h3>
             <p>{{ position.description }}</p>
-                {% for application in application_form %}
-                    {{ application }}
-                    {% if applicant == "new" %}
-                        <input type="submit" class="button button-primary" value="Apply">
-                    {% elif applicant == "rejected" %}
-                        <a class="button button-primary button-inactive">Position Filled</a>
-                    {% else %}
-                        <a class="button button-primary button-inactive">Position Filled</a>
-                    {% endif %}
-                {% endfor %}
+                <input type="hidden" value="{{ position.id }}" name="position_id">
+                <input type="submit" class="button button-primary" value="Apply">
+
+{#                {% for application in application_form %}#}
+{#                    {{ application }}#}
+{#                    {% if applicant == "new" %}#}
+{#                        <input type="submit" class="button button-primary" value="Apply">#}
+{#                    {% elif applicant == "rejected" %}#}
+{#                        <a class="button button-primary button-inactive">Position Filled</a>#}
+{#                    {% elif applicant == "Accpted" %}#}
+{#                        <a class="button button-primary button-inactive">Position Filled</a>#}
+{#                    {% else %}#}
+{#                        <input type="submit" class="button button-primary" value="Apply">#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
             </li>
           {% endfor %}
         </ul>
