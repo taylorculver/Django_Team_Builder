@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core import mail
 from django.core.urlresolvers import reverse
-from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,6 +14,28 @@ import pdb
 from . import models
 from . import forms
 from .apps import Project, Position, Applicant
+
+
+def send_email(application):
+    """Function to send email upon rejection or acceptance"""
+    connection = mail.get_connection()
+
+    # Manually open the connection
+    connection.open()
+
+    # Construct an email message that uses the connection
+    """https://docs.djangoproject.com/en/1.9/topics/email/#emailmessage-objects"""
+    email = mail.EmailMessage(
+        subject='Regarding Your Application',
+        body="Your application to blah was {}".format(application.status),
+        from_email='from@teambuilder.com',
+        to=['to@applicant.com'],
+        connection=connection,
+    )
+    email.send()  # Send the email
+
+    # We need to manually close the connection.
+    connection.close()
 
 
 def sign_in(request):
@@ -72,7 +93,7 @@ def sign_out(request):
     return HttpResponseRedirect(reverse('accounts:sign_in'))
 
 
-@login_required
+# @login_required
 def view_profile(request, pk):
     """Show User Profile, associated Projects and Skills"""
     # query current logged in User
@@ -143,25 +164,17 @@ def edit_profile(request, pk):
                                              prefix='github_formset'
                                              )
 
-        # print(github_formset)
-
-        # BUG SKILLS FORMSET IS NOT VALID
-        # <ul class="errorlist nonfield"><li>(Hidden field id) Select a valid choice. That choice is not one of the available choices.</li>
-
         if profile_form.is_valid() and skills_formset.is_valid() and github_formset.is_valid():
             profile_form.save()
 
             skills = skills_formset.save(commit=False)
-            # print(skills)
             for skill in skills:
                 # associate each Skill with a User's Profile
                 skill.profile_id = profile.id
                 skill.save()
 
             githubs = github_formset.save(commit=False)
-            # print(githubs)
             for github in githubs:
-                # print(github)
                 # associate each Github with a User's Profile
                 github.profile_id = profile.id
                 github.save()
@@ -205,56 +218,14 @@ def view_applications(request, pk):
 
     # return values for Applicant, id, full name, position title, project name, and status to return to view
     applicants = joined_queryset.values('applicant_id',
+                                        'id',
                                         'applicant__full_name',
                                         'position__title',
                                         'project__name',
                                         'project__id',
+                                        'position__id',
                                         'status'
                                         )
-
-    if request.method == 'POST':
-        # bug - positions cannot be hard coded
-        application = Applicant.objects.get(position_id=36,
-                                            project_id=41,
-                                            applicant_id=request.user.id
-                                            )
-        application_form = forms.ApplicantStatusForm(request.POST)
-
-        if application_form.is_valid():
-            if application.status == "new":
-                application.status = "accepted"
-            elif application.status == "accepted":
-                application.status = "rejected"
-            elif application.status == "rejected":
-                application.status = "accepted"
-            # print(application.status)
-            # bug - positions cannot be hard coded
-            Applicant.objects.update(position_id=36,
-                                     project_id=41,
-                                     status=application.status,
-                                     applicant_id=request.user.id
-                                     )
-
-            connection = mail.get_connection()
-
-            # Manually open the connection
-            connection.open()
-
-            # Construct an email message that uses the connection
-            """https://docs.djangoproject.com/en/1.9/topics/email/#emailmessage-objects"""
-            email = mail.EmailMessage(
-                subject='Regarding Your Application',
-                body="Your application to blah was {}".format(application.status),
-                from_email='from@teambuilder.com',
-                to=['to@applicant.com'],
-                connection=connection,
-            )
-            email.send()  # Send the email
-
-            # We need to manually close the connection.
-            connection.close()
-
-            return redirect('accounts:applications', pk=request.user.id)
 
     return render(request, "accounts/applications.html", {
         'pk': pk,
@@ -263,6 +234,14 @@ def view_applications(request, pk):
         'my_projects': my_projects,
         'statuses': statuses
     })
+
+
+def approve_applications(request, user_pk, application_pk, decision):
+    """Approve or Reject Applicants"""
+
+    Applicant.objects.filter(pk=application_pk).update(status=decision)
+
+    return redirect('accounts:applications', pk=user_pk)
 
 
 @login_required
@@ -378,4 +357,3 @@ def filter_applications(request, pk, filter):
         'my_projects': my_projects,
         'statuses': statuses
     })
-

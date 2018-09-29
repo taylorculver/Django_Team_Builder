@@ -99,7 +99,7 @@ GitHubFormSet = forms.modelformset_factory(
 
 
 class ApplicantStatusForm(forms.ModelForm):
-    """Form to submit to applicant model"""
+    """Form for User to apply to Position"""
     class Meta:
         model = Applicant
-        exclude = ('position', 'applicant', 'status', 'project')
+        exclude = ('position', 'applicant', 'project', 'status')

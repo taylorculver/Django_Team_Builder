@@ -5,9 +5,12 @@ from projects.models import Position, Project
 
 
 def home(request):
-    """Redirects User to respective Profile page"""
+    """Redirects User to respective Profile page on signed in"""
     user = request.user.id
-    return redirect('accounts:profile', pk=user)
+    if user:
+        return redirect('accounts:profile', pk=user)
+    else:
+        return redirect('accounts:sign_in')
 
 
 def all_projects(request):
