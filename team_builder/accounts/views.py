@@ -23,11 +23,15 @@ def send_email(application):
     # Manually open the connection
     connection.open()
 
+    project = Project.objects.get(pk=application.project_id)
+    status = application.status
+    full_name = models.Profile.objects.get(username_id=application.applicant_id).full_name
+
     # Construct an email message that uses the connection
     """https://docs.djangoproject.com/en/1.9/topics/email/#emailmessage-objects"""
     email = mail.EmailMessage(
-        subject='Regarding Your Application',
-        body="Your application to blah was {}".format(application.status),
+        subject='Hi {}, Regarding Your Application'.format(full_name),
+        body="Your application to {} was {}. Thank you for using the team builder application!".format(project, status),
         from_email='from@teambuilder.com',
         to=['to@applicant.com'],
         connection=connection,
@@ -239,15 +243,18 @@ def view_applications(request, pk):
 def approve_applications(request, user_pk, application_pk, decision):
     """Approve or Reject Applicants"""
 
+    # Get current Applicant Status
     reverse_status = Applicant.objects.get(pk=application_pk).status
+
+    # If Applicant Status is new, change it rejected
     if reverse_status == "new":
         reverse_status = "rejected"
-    else:
-        pass
 
-    print(reverse_status)
-    print(decision)
+    # Change Applicant Status and reverse status to keep button functioning as appropriate
     Applicant.objects.filter(pk=application_pk).update(status=decision, reverse_status=reverse_status)
+
+    # Send email to Applicant to alert them if they have been accepted or rejected
+    send_email(Applicant.objects.get(pk=application_pk))
 
     return redirect('accounts:applications', pk=user_pk)
 
@@ -310,53 +317,9 @@ def filter_applications(request, pk, filter):
                                         'position__title',
                                         'project__name',
                                         'project__id',
-                                        'status'
+                                        'status',
+                                        'reverse_status'
                                         )
-
-    # print(applicants)
-    if request.method == 'POST':
-        # bug - positions cannot be hard coded
-        application = Applicant.objects.get(position_id=36,
-                                            project_id=41,
-                                            applicant_id=request.user.id
-                                            )
-        application_form = forms.ApplicantStatusForm(request.POST)
-
-        if application_form.is_valid():
-            if application.status == "new":
-                application.status = "accepted"
-            elif application.status == "accepted":
-                application.status = "rejected"
-            elif application.status == "rejected":
-                application.status = "accepted"
-            # print(application.status)
-            # bug - positions cannot be hard coded
-            Applicant.objects.update(position_id=36,
-                                     project_id=41,
-                                     status=application.status,
-                                     applicant_id=request.user.id
-                                     )
-
-            connection = mail.get_connection()
-
-            # Manually open the connection
-            connection.open()
-
-            # Construct an email message that uses the connection
-            """https://docs.djangoproject.com/en/1.9/topics/email/#emailmessage-objects"""
-            email = mail.EmailMessage(
-                subject='Regarding Your Application',
-                body="Your application to blah was {}".format(application.status),
-                from_email='from@teambuilder.com',
-                to=['to@applicant.com'],
-                connection=connection,
-            )
-            email.send()  # Send the email
-
-            # We need to manually close the connection.
-            connection.close()
-
-            return redirect('accounts:applications', pk=request.user.id)
 
     return render(request, "accounts/applications.html", {
         'pk': pk,
