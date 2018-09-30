@@ -73,7 +73,7 @@
                                 </td>
                                 <td>{{ applicant.status|capfirst }}</td>
                                 <td style="text-align: center">
-                                    <form style="margin-bottom: 0rem" enctype="multipart/form-data" method="POST" action="{% url 'accounts:approve_applications' user_pk=user.id application_pk=applicant.id decision='rejected' %}">
+                                    <form style="margin-bottom: 0rem" enctype="multipart/form-data" method="POST" action="{% url 'accounts:approve_applications' user_pk=user.id application_pk=applicant.id decision=applicant.reverse_status %}">
                                     {% csrf_token %}
                                     {% if applicant.status == 'new' %}
                                         <input type="submit" class="button button-primary" value="Approve">

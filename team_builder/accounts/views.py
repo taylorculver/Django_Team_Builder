@@ -93,7 +93,7 @@ def sign_out(request):
     return HttpResponseRedirect(reverse('accounts:sign_in'))
 
 
-# @login_required
+@login_required
 def view_profile(request, pk):
     """Show User Profile, associated Projects and Skills"""
     # query current logged in User
@@ -224,11 +224,11 @@ def view_applications(request, pk):
                                         'project__name',
                                         'project__id',
                                         'position__id',
-                                        'status'
+                                        'status',
+                                        'reverse_status'
                                         )
 
     return render(request, "accounts/applications.html", {
-        'pk': pk,
         'applicants': applicants,
         'my_positions': my_positions,
         'my_projects': my_projects,
@@ -239,7 +239,15 @@ def view_applications(request, pk):
 def approve_applications(request, user_pk, application_pk, decision):
     """Approve or Reject Applicants"""
 
-    Applicant.objects.filter(pk=application_pk).update(status=decision)
+    reverse_status = Applicant.objects.get(pk=application_pk).status
+    if reverse_status == "new":
+        reverse_status = "rejected"
+    else:
+        pass
+
+    print(reverse_status)
+    print(decision)
+    Applicant.objects.filter(pk=application_pk).update(status=decision, reverse_status=reverse_status)
 
     return redirect('accounts:applications', pk=user_pk)
 

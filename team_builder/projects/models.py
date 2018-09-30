@@ -50,6 +50,16 @@ class Applicant(models.Model):
         on_delete=models.CASCADE
     )
     status = models.CharField(max_length=200, default="new")
+    reverse_status = models.CharField(max_length=200, default="approved")
+
+    def save(self, *args, **kwargs):
+        if self.status == "new":
+            self.reverse_status = "approved"
+        elif self.status == "approved":
+            self.reverse_status = "rejected"
+        elif self.status == "rejected":
+            self.reverse_status = "approved"
+        super(Applicant, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.applicant_id)
