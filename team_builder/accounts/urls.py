@@ -16,11 +16,13 @@ urlpatterns = [
     # To view all Applications
     url(r'^(?P<pk>\w+)/applications/$', views.view_applications, name='applications'),
 
+    # To filter Applications by Project, Position, etc...
+    url(r'^(?P<user_pk>\w+)/applications/filter/(?P<filter>.+?)/$', views.filter_applications,
+        name='filter_applications'),
+
     # To change the status of an Applicant
-    url(r'^(?P<user_pk>\w+)/applications/(?P<application_pk>\w+)/(?P<decision>approved|rejected|new)/$',
+    url(r'^(?P<user_pk>\w+)/applications/change-status/(?P<application_pk>\w+)/(?P<decision>approved|rejected|new)/$',
         views.approve_applications,
         name='approve_applications'),
 
-    # To filter Applications by Project, Position, etc...
-    url(r'^(?P<pk>\w+)/applications/filter/(?P<filter>.+?)/$', views.filter_applications, name='filter_applications')
 ]

@@ -23,7 +23,7 @@
                 <ul class="circle--filter--list">
                     <li><a class="selected" href="{% url "accounts:applications" pk=user.id %}">All Applications</a></li>
                     {% for status in statuses %}
-                        <li><a href="{% url 'accounts:filter_applications' pk=user.id filter=status|lower %}">{{ status }}</a></li>
+                        <li><a href="{% url 'accounts:filter_applications' user_pk=user.id filter=status|lower %}">{{ status }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -33,7 +33,7 @@
                 <ul class="circle--filter--list">
                     <li><a class="selected" href="{% url "accounts:applications" pk=user.id %}">All Projects</a></li>
                     {% for project in my_projects %}
-                        <li><a href="{% url 'accounts:filter_applications' pk=user.id filter=project.name %}">{{ project.name }}</a></li>
+                        <li><a href="{% url 'accounts:filter_applications' user_pk=user.id filter=project.name %}">{{ project.name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -43,7 +43,7 @@
                 <ul class="circle--filter--list">
                     <li><a class="selected" href="{% url "accounts:applications" pk=user.id %}">All Needs</a></li>
                     {% for position in my_positions %}
-                        <li><a href="{% url 'accounts:filter_applications' pk=user.id filter=position.title %}">{{ position.title }}</a></li>
+                        <li><a href="{% url 'accounts:filter_applications' user_pk=user.id filter=position.title %}">{{ position.title }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

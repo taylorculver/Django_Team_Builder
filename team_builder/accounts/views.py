@@ -211,7 +211,7 @@ def view_applications(request, pk):
 
     """STATUS RELATED FILTERING"""
     # canned variables for Applicant(s) status
-    statuses = ["New", "Accepted", "Rejected"]
+    statuses = ["New", "Approved", "Rejected"]
 
     """ASSEMBLE FINAL FILTER"""
     # query list of all Applicant(s) who have applied to current User's Project(s)
@@ -240,6 +240,7 @@ def view_applications(request, pk):
     })
 
 
+@login_required
 def approve_applications(request, user_pk, application_pk, decision):
     """Approve or Reject Applicants"""
 
@@ -260,18 +261,18 @@ def approve_applications(request, user_pk, application_pk, decision):
 
 
 @login_required
-def filter_applications(request, pk, filter):
+def filter_applications(request, user_pk, filter):
     """Filter for all of the Applicants for my Project's Position(s)"""
 
     """PROJECT RELATED FILTERING"""
     # query all Project(s) that belong to current logged in User
-    my_projects = Project.objects.filter(owner_id=pk).values()
+    my_projects = Project.objects.filter(owner_id=user_pk).values()
 
     # build list of all Project id's belonging to current logged in User
     my_project_ids = [ids['id'] for ids in my_projects]
 
     # filter for all Project(s) that the current User is associated with
-    my_filtered_projects = Project.objects.filter(Q(owner_id=pk) & Q(name__icontains=filter)).values()
+    my_filtered_projects = Project.objects.filter(Q(owner_id=user_pk) & Q(name__icontains=filter)).values()
 
     # build list of all Project id's belonging to current logged in User w/ filters applied
     my_filtered_project_ids = [ids['id'] for ids in my_filtered_projects]
@@ -288,7 +289,7 @@ def filter_applications(request, pk, filter):
 
     """STATUS RELATED FILTERING"""
     # canned variables for Applicant(s) status
-    statuses = ["New", "Accepted", "Rejected"]
+    statuses = ["New", "Approved", "Rejected"]
 
     # query all Applicants associated with my Projects
     my_applications = Applicant.objects.filter(Q(project_id__in=my_project_ids) &
@@ -313,18 +314,22 @@ def filter_applications(request, pk, filter):
 
     # return values for Applicant, id, full name, position title, project name, and status to return to view
     applicants = joined_queryset.values('applicant_id',
+                                        'id',
                                         'applicant__full_name',
                                         'position__title',
                                         'project__name',
                                         'project__id',
+                                        'position__id',
                                         'status',
                                         'reverse_status'
                                         )
 
+    print(applicants)
+
     return render(request, "accounts/applications.html", {
-        'pk': pk,
         'applicants': applicants,
         'my_positions': my_positions,
         'my_projects': my_projects,
-        'statuses': statuses
+        'statuses': statuses,
+        'user_pk': user_pk,
     })
