@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% load bootstrap3 %}
 
-
 {% block body_content %}
     <div class="circle--actions--bar">
         <nav class="bounds">
@@ -61,19 +60,19 @@
                         <th class="circle--cell--right" style="text-align: center">Action</th>
                     </tr>
                     </thead>
-                        <tbody>
-                        {% for applicant in applicants %}
-                            <tr class="clickable-row" data-href="{% url 'projects:project' pk=applicant.project__id %}">
-                                <td>
-                                    <h3>{{ applicant.applicant__full_name }}</h3>
-                                    <p>{{ applicant.project__name }}</p>
-                                </td>
-                                <td class="circle--cell--right">
-                                    <span class="secondary-label">{{ applicant.position__title }}</span>
-                                </td>
-                                <td>{{ applicant.status|capfirst }}</td>
-                                <td style="text-align: center">
-                                    <form style="margin-bottom: 0rem" enctype="multipart/form-data" method="POST" action="{% url 'accounts:approve_applications' user_pk=user.id application_pk=applicant.id decision=applicant.reverse_status %}">
+                    <tbody>
+                    {% for applicant in applicants %}
+                        <tr class="clickable-row" data-href="{% url 'projects:project' pk=applicant.project__id %}">
+                            <td>
+                                <h3>{{ applicant.applicant__full_name }}</h3>
+                                <p>{{ applicant.project__name }}</p>
+                            </td>
+                            <td class="circle--cell--right">
+                                <span class="secondary-label">{{ applicant.position__title }}</span>
+                            </td>
+                            <td>{{ applicant.status|capfirst }}</td>
+                            <td style="text-align: center">
+                                <form style="margin-bottom: 0rem" enctype="multipart/form-data" method="POST" action="{% url 'accounts:approve_applications' user_pk=user.id application_pk=applicant.id decision=applicant.reverse_status %}">
                                     {% csrf_token %}
                                     {% if applicant.status == 'new' %}
                                         <input type="submit" class="button button-primary" value="Approve">
@@ -82,13 +81,11 @@
                                     {% elif applicant.status == 'rejected' %}
                                         <input type="submit" class="button button-primary" value="Approve">
                                     {% endif %}
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-
-
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
                 </table>
             {% else %}
                 <table class="u-full-width circle--table">
@@ -103,8 +100,6 @@
                 </table>
                 <p>No Applicants Meet this Criteria, Please Try Again Later!</p>
             {% endif %}
-
         </div>
-
     </div>
 {% endblock %}

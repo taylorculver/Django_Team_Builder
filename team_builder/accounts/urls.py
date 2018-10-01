@@ -14,14 +14,18 @@ urlpatterns = [
     url(r'^(?P<pk>\w+)/edit/$', views.edit_profile, name='edit_profile'),
 
     # To view all Applications
-    url(r'^(?P<pk>\w+)/applications/$', views.view_applications, name='applications'),
+    url(r'^(?P<pk>\w+)/applications/$',
+        views.view_applications,
+        name='applications'),
 
     # To filter Applications by Project, Position, etc...
-    url(r'^(?P<user_pk>\w+)/applications/filter/(?P<filter>.+?)/$', views.filter_applications,
+    url(r'^(?P<user_pk>\w+)/applications/filter/(?P<filter>.+?)/$',
+        views.filter_applications,
         name='filter_applications'),
 
     # To change the status of an Applicant
-    url(r'^(?P<user_pk>\w+)/applications/change-status/(?P<application_pk>\w+)/(?P<decision>approved|rejected|new)/$',
+    url(r'^(?P<user_pk>\w+)/applications/change-status/'
+        r'(?P<application_pk>\w+)/(?P<decision>approved|rejected|new)/$',
         views.approve_applications,
         name='approve_applications'),
 

@@ -29,7 +29,7 @@ def view_project(request, pk):
 
         application_form = forms.ApplicantStatusForm(data=request.POST)
 
-        print(application_form.is_valid())
+        # print(application_form.is_valid())
 
         if application_form.is_valid():
             application_form.save(commit=False)
@@ -57,7 +57,8 @@ def edit_project(request, pk):
     """Edit individual projects"""
     project = get_object_or_404(models.Project, pk=pk)
     project_form = forms.ProjectForm(instance=project)
-    position_formset = forms.PositionFormSet(queryset=models.Position.objects.filter(project_id=pk))
+    position_formset = forms.PositionFormSet(
+        queryset=models.Position.objects.filter(project_id=pk))
 
     # add prefix's to call each form separately in project_new template
     if request.method == 'POST':
@@ -66,17 +67,21 @@ def edit_project(request, pk):
         # print(request.POST.copy())
 
         project_form = forms.ProjectForm(data=request.POST)
-        position_formset = forms.PositionFormSet(data=request.POST, queryset=models.Position.objects.all())
+        position_formset = forms.PositionFormSet(
+            data=request.POST,
+            queryset=models.Position.objects.all())
 
         # both forms must be valid to proceed
         if project_form.is_valid() and position_formset.is_valid():
 
-            # must collect logged in userid to ensure referential integrity to User model
+            # must collect logged in userid to ensure
+            # referential integrity to User model
             project = project_form.save(commit=False)
             project.owner_id = request.user.id
             models.Project.objects.get_or_create(pk=pk)
 
-            # must collect projectid to ensure referential integrity to the Project model
+            # must collect projectid to ensure
+            # referential integrity to the Project model
             positions = position_formset.save(commit=False)
             for position in positions:
                 position.project_id = pk
@@ -106,7 +111,8 @@ def new_project(request):
     """
 
     project_form = forms.ProjectForm(data=request.POST)
-    position_formset = forms.PositionFormSet(queryset=models.Position.objects.none())
+    position_formset = forms.PositionFormSet(
+        queryset=models.Position.objects.none())
 
     # add prefix's to call each form separately in project_new template
     if request.method == 'POST':
@@ -115,17 +121,21 @@ def new_project(request):
         # print(request.POST.copy())
 
         project_form = forms.ProjectForm(data=request.POST)
-        position_formset = forms.PositionFormSet(data=request.POST, queryset=models.Position.objects.none())
+        position_formset = forms.PositionFormSet(
+            data=request.POST,
+            queryset=models.Position.objects.none())
 
         # both forms must be valid to proceed
         if project_form.is_valid() and position_formset.is_valid():
 
-            # must collect logged in userid to ensure referential integrity to User model
+            # must collect logged in userid to ensure
+            # referential integrity to User model
             project = project_form.save(commit=False)
             project.owner_id = request.user.id
             project.save()
 
-            # must collect projectid to ensure referential integrity to the Project model
+            # must collect projectid to ensure
+            # referential integrity to the Project model
             positions = position_formset.save(commit=False)
             for position in positions:
                 position.project_id = project.id

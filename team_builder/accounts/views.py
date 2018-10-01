@@ -25,13 +25,17 @@ def send_email(application):
 
     project = Project.objects.get(pk=application.project_id)
     status = application.status
-    full_name = models.Profile.objects.get(username_id=application.applicant_id).full_name
+    full_name = models.Profile.objects.get(
+        username_id=application.applicant_id).full_name
 
     # Construct an email message that uses the connection
-    """https://docs.djangoproject.com/en/1.9/topics/email/#emailmessage-objects"""
+    """https://docs.djangoproject.com/en/
+    1.9/topics/email/#emailmessage-objects"""
     email = mail.EmailMessage(
         subject='Hi {}, Regarding Your Application'.format(full_name),
-        body="Your application to {} was {}. Thank you for using the team builder application!".format(project, status),
+        body="Your application to {} was {}. "
+             "Thank you for using the team builder application!"
+                .format(project, status),
         from_email='from@teambuilder.com',
         to=['to@applicant.com'],
         connection=connection,
@@ -107,10 +111,12 @@ def view_profile(request, pk):
     projects = Project.objects.filter(owner_id=pk)
 
     # query all Skills associated with logged in User's Profile
-    skills = models.Skill.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
+    skills = models.Skill.objects.filter(
+        profile_id=models.Profile.objects.get(username_id=pk).id)
 
     # query all GitHub Projects associated with logged in User's Profile
-    githubs = models.GitHub.objects.filter(profile_id=models.Profile.objects.get(username_id=pk).id)
+    githubs = models.GitHub.objects.filter(
+        profile_id=models.Profile.objects.get(username_id=pk).id)
 
     return render(request, "accounts/profile.html", {
         'githubs': githubs,
@@ -134,14 +140,16 @@ def edit_profile(request, pk):
     profile = get_object_or_404(models.Profile, username_id=pk)
 
     # generate Skills Formset
-    skills_formset = forms.SkillFormSet(queryset=profile.skill_set.all(),
-                                        # prefix required for multiple formsets on a single page
-                                        prefix='skills_formset')
+    skills_formset = forms.SkillFormSet(
+        queryset=profile.skill_set.all(),
+        # prefix required for multiple formsets on a single page
+        prefix='skills_formset')
 
     # generate GitHub Formset
-    github_formset = forms.GitHubFormSet(queryset=profile.github_set.all(),
-                                         # prefix required for multiple formsets on a single page
-                                         prefix='github_formset')
+    github_formset = forms.GitHubFormSet(
+        queryset=profile.github_set.all(),
+        # prefix required for multiple formsets on a single page
+        prefix='github_formset')
 
     # generate Profile form
     profile_form = forms.ProfileForm(instance=user.profile)
@@ -153,22 +161,27 @@ def edit_profile(request, pk):
 
         profile_form = forms.ProfileForm(instance=user.profile,
                                          data=request.POST,
-                                         # files are necessary since we're sending over an image
+                                         # files are necessary since
+                                         # we're sending over an image
                                          files=request.FILES)
 
         skills_formset = forms.SkillFormSet(request.POST,
                                             queryset=profile.skill_set.all(),
-                                            # prefix required for multiple formsets on a single page
+                                            # prefix required for multiple
+                                            # formsets on a single page
                                             prefix='skills_formset',
                                             )
 
         github_formset = forms.GitHubFormSet(request.POST,
                                              queryset=profile.github_set.all(),
-                                             # prefix required for multiple formsets on a single page
+                                             # prefix required for multiple
+                                             # formsets on a single page
                                              prefix='github_formset'
                                              )
 
-        if profile_form.is_valid() and skills_formset.is_valid() and github_formset.is_valid():
+        if profile_form.is_valid() \
+                and skills_formset.is_valid() \
+                and github_formset.is_valid():
             profile_form.save()
 
             skills = skills_formset.save(commit=False)
@@ -214,13 +227,20 @@ def view_applications(request, pk):
     statuses = ["New", "Approved", "Rejected"]
 
     """ASSEMBLE FINAL FILTER"""
-    # query list of all Applicant(s) who have applied to current User's Project(s)
-    queryset = Applicant.objects.filter(project_id__in=my_project_ids)
+    # query list of all Applicant(s) who have
+    # applied to current User's Project(s)
+    queryset = Applicant.objects.filter(
+        project_id__in=my_project_ids)
 
-    # join related Applicant and Position models to Applicant(s) who have applied to current User's Project(s)
-    joined_queryset = queryset.select_related("applicant").select_related("position")
+    # join related Applicant and Position models
+    # to Applicant(s) who have applied to
+    # current User's Project(s)
+    joined_queryset = queryset.\
+        select_related("applicant").\
+        select_related("position")
 
-    # return values for Applicant, id, full name, position title, project name, and status to return to view
+    # return values for Applicant, id, full name, position title,
+    # project name, and status to return to view
     applicants = joined_queryset.values('applicant_id',
                                         'id',
                                         'applicant__full_name',
@@ -251,10 +271,14 @@ def approve_applications(request, user_pk, application_pk, decision):
     if reverse_status == "new":
         reverse_status = "rejected"
 
-    # Change Applicant Status and reverse status to keep button functioning as appropriate
-    Applicant.objects.filter(pk=application_pk).update(status=decision, reverse_status=reverse_status)
+    # Change Applicant Status and reverse status to
+    # keep button functioning as appropriate
+    Applicant.objects.filter(pk=application_pk).update(
+        status=decision,
+        reverse_status=reverse_status)
 
-    # Send email to Applicant to alert them if they have been accepted or rejected
+    # Send email to Applicant to alert them if
+    # they have been accepted or rejected
     send_email(Applicant.objects.get(pk=application_pk))
 
     return redirect('accounts:applications', pk=user_pk)
@@ -272,19 +296,25 @@ def filter_applications(request, user_pk, filter):
     my_project_ids = [ids['id'] for ids in my_projects]
 
     # filter for all Project(s) that the current User is associated with
-    my_filtered_projects = Project.objects.filter(Q(owner_id=user_pk) & Q(name__icontains=filter)).values()
+    my_filtered_projects = Project.objects.filter(
+        Q(owner_id=user_pk) &
+        Q(name__icontains=filter)).values()
 
-    # build list of all Project id's belonging to current logged in User w/ filters applied
+    # build list of all Project id's belonging to
+    # current logged in User w/ filters applied
     my_filtered_project_ids = [ids['id'] for ids in my_filtered_projects]
 
     """POSITION RELATED FILTERING"""
     # query all Positions associated with my Projects
     my_positions = Position.objects.filter(project_id__in=my_project_ids)
 
-    # filter for all Positions(s) that the current User is associated with
-    my_filtered_positions = Position.objects.filter(title__icontains=filter).values()
+    # filter for all Positions(s) that the current
+    # User is associated with
+    my_filtered_positions = Position.objects.filter(
+        title__icontains=filter).values()
 
-    # build list of all Position id's belonging to current logged in User w/ filters applied
+    # build list of all Position id's belonging to
+    # current logged in User w/ filters applied
     my_filtered_position_ids = [ids['id'] for ids in my_filtered_positions]
 
     """STATUS RELATED FILTERING"""
@@ -292,27 +322,32 @@ def filter_applications(request, user_pk, filter):
     statuses = ["New", "Approved", "Rejected"]
 
     # query all Applicants associated with my Projects
-    my_applications = Applicant.objects.filter(Q(project_id__in=my_project_ids) &
-                                               Q(status__icontains=filter)
-                                               ).values()
+    my_applications = Applicant.objects.filter(
+        Q(project_id__in=my_project_ids) &
+        Q(status__icontains=filter)
+        ).values()
 
-    # build list of all Applicant id's belonging to current logged in User w/ filters applied
+    # build list of all Applicant id's belonging
+    # to current logged in User w/ filters applied
     my_application_ids = [ids['id'] for ids in my_applications]
 
     """ASSEMBLE FINAL FILTER"""
-    # query list of all Applicant(s) who have applied to current User's Project(s)
+    # query list of all Applicant(s) who have
+    # applied to current User's Project(s)
     queryset = Applicant.objects.filter(
         Q(project_id__in=my_filtered_project_ids) |
         Q(position_id__in=my_filtered_position_ids) |
         Q(id__in=my_application_ids)
     )
 
-    # print(queryset)
+    # join related Applicant and Position models to Applicant(s)
+    # who have applied to current User's Project(s)
+    joined_queryset = queryset.\
+        select_related("applicant").\
+        select_related("position")
 
-    # join related Applicant and Position models to Applicant(s) who have applied to current User's Project(s)
-    joined_queryset = queryset.select_related("applicant").select_related("position")
-
-    # return values for Applicant, id, full name, position title, project name, and status to return to view
+    # return values for Applicant, id, full name,
+    # position title, project name, and status to return to view
     applicants = joined_queryset.values('applicant_id',
                                         'id',
                                         'applicant__full_name',
@@ -323,8 +358,6 @@ def filter_applications(request, user_pk, filter):
                                         'status',
                                         'reverse_status'
                                         )
-
-    print(applicants)
 
     return render(request, "accounts/applications.html", {
         'applicants': applicants,

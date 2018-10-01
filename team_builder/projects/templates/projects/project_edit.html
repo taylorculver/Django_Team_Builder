@@ -2,63 +2,59 @@
 {% load bootstrap3 %}
 
 {% block body_content %}
-{#{% if project.owner_id == user.id %}#}
-        <form method="POST">
-    {% csrf_token %}
-  <div class="circle--actions--bar">
-    <div class="bounds">
-      <div class="grid-100">
-          <input type="submit" class="button button-primary" value="Save Project">
-        <a class="button button-text" href="{% url "projects:discard_project" pk=pk %}">Delete Project</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="bounds circle--page circle--article">
-    <div class="grid-70">
-      <div class="circle--article--body">
-          {{ project_form.name }}
-          {{ project_form.description }}
-      </div>
-        <div class="circle--project--positions">
-            <h2>Positions</h2>
-            {{ position_formset.management_form }}
-            {{ position_formset.non_form_errors }}
-            {% for position in position_formset %}
-                <ul id="positions" class="circle--group--list circle--clone--list">
-                    <li>
-                        {{ position.id }}{{ position.title }}{{ position.description }}
-                    </li>
-                </ul>
-            {% endfor %}
-            <input type="submit" class="button button-primary" value="Save Project">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="circle--actions--bar">
+            <div class="bounds">
+                <div class="grid-100">
+                    <input type="submit" class="button button-primary" value="Save Project">
+                    <a class="button button-text" href="{% url "projects:discard_project" pk=pk %}">Delete Project</a>
+                </div>
+            </div>
         </div>
 
-    </div>
+        <div class="bounds circle--page circle--article">
+            <div class="grid-70">
+                <div class="circle--article--body">
+                    {{ project_form.name }}
+                    {{ project_form.description }}
+                </div>
+                <div class="circle--project--positions">
+                    <h2>Positions</h2>
+                    {{ position_formset.management_form }}
+                    {{ position_formset.non_form_errors }}
+                    {% for position in position_formset %}
+                        <ul id="positions" class="circle--group--list circle--clone--list">
+                            <li>
+                                {{ position.id }}{{ position.title }}{{ position.description }}
+                            </li>
+                        </ul>
+                    {% endfor %}
+                    <input type="submit" class="button button-primary" value="Save Project">
+                </div>
 
-    <div class="grid-25 grid-push-5">
-      <div class="circle--secondary--module">
-        <h3>Project Timeline</h3>
-          {{ project_form.timeline }}
-      </div>
+            </div>
 
-      <div class="circle--secondary--module">
-        <h3>Application Requirements</h3>
-        {{ project_form.requirements }}
-      </div>
+            <div class="grid-25 grid-push-5">
+                <div class="circle--secondary--module">
+                    <h3>Project Timeline</h3>
+                    {{ project_form.timeline }}
+                </div>
 
-    </div>
-  </div>
-  <script>
-        $('#positions li').formset({
-          addText: 'Add Position',
-          deleteText: 'Remove Position',
-          addCssClass: 'circle--clone--add',
-          deleteCssClass: 'circle--clone--remove'
-        });
-  </script>
-</form>
-{#{% else %}#}
-{#    "NOTHING HERE"#}
-{#{% endif %}#}
+                <div class="circle--secondary--module">
+                    <h3>Application Requirements</h3>
+                    {{ project_form.requirements }}
+                </div>
+
+            </div>
+        </div>
+        <script>
+            $('#positions li').formset({
+                addText: 'Add Position',
+                deleteText: 'Remove Position',
+                addCssClass: 'circle--clone--add',
+                deleteCssClass: 'circle--clone--remove'
+            });
+        </script>
+    </form>
 {% endblock %}

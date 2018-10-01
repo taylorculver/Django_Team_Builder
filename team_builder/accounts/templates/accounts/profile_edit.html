@@ -2,111 +2,111 @@
 {% load bootstrap3 %}
 
 {% block body_content %}
-  <form enctype="multipart/form-data" method="POST">
-  {% csrf_token %}
-  <div class="circle--actions--bar">
-    <nav class="bounds">
-      <ul class="circle--pill--list">
-        <li><a href="{% url "accounts:applications" pk=user.id %}">Applications</a></li>
-        <li><a class="selected" href="{% url "accounts:profile" pk=user.id %}">Profile</a></li>
-      </ul>
-    </nav>
-  </div>
-
-  <div class="bounds circle--page">
-    <div class="circle--page--header circle--fluid">
-      <div class="circle--fluid--cell circle--fluid--primary">
-        <h2>Profile</h2>
-      </div>
-      <div class="circle--fluid--cell circle--fluid--secondary">
-          <input type="submit" class="button button-primary" value="Save Changes">
-      </div>
-    </div>
-
-    <div class="grid-70">
-        {{ profile_form.full_name }}
-      <div class="circle--article--body">
-        {{ profile_form.description }}
-      </div>
-
-        <h2>Past Projects</h2>
-      <table class="u-full-width circle--table">
-        <thead>
-          <tr>
-            <th>Project Title</th>
-            <th class="circle--cell--right">Project Needs</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for project in projects %}
-          <tr class="clickable-row" data-href="{% url "projects:project" pk=project.id %}">
-            <td>
-              <h3>{{ project.name }}</h3>
-            </td>
-            <td class="circle--cell--right">
-              <span class="secondary-label">{{ project.requirements }}</span>
-            </td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="grid-25 grid-push-5">
-
-      <div class="circle--secondary--module">
-        <div class="circle--primary--avatar">
-          <a class="button">
-            Upload Photo
-              {{ profile_form.avatar.errors }}
-              {{ profile_form.avatar }}
-          </a>
+    <form enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        <div class="circle--actions--bar">
+            <nav class="bounds">
+                <ul class="circle--pill--list">
+                    <li><a href="{% url "accounts:applications" pk=user.id %}">Applications</a></li>
+                    <li><a class="selected" href="{% url "accounts:profile" pk=user.id %}">Profile</a></li>
+                </ul>
+            </nav>
         </div>
-      </div>
 
-      <div class="circle--secondary--module">
-        <h4>My Skills</h4>
-          {{ skills_formset.management_form }}
-          {{ skills_formset.non_form_errors }}
-          {% for skills in skills_formset %}
-              <ul id="skills" class="circle--clone--list">
-                <li>
-                    {{ skills.id }} {{ skills.skill }}
-                </li>
-            </ul>
-          {% endfor %}
-      </div>
+        <div class="bounds circle--page">
+            <div class="circle--page--header circle--fluid">
+                <div class="circle--fluid--cell circle--fluid--primary">
+                    <h2>Profile</h2>
+                </div>
+                <div class="circle--fluid--cell circle--fluid--secondary">
+                    <input type="submit" class="button button-primary" value="Save Changes">
+                </div>
+            </div>
 
-      <div class="circle--secondary--module">
-        <h4>My Github Projects</h4>
-        {{ github_formset.management_form }}
-        {{ github_formset.non_form_errors }}
-        {% for githubs in github_formset %}
-        <ul id="githubs" class="circle--clone--list">
-          <li>
-              {{ githubs.id }}{{ githubs.github_project }}{{ githubs.github_url }}
-          </li>
-        </ul>
-        {% endfor %}
-      </div>
+            <div class="grid-70">
+                {{ profile_form.full_name }}
+                <div class="circle--article--body">
+                    {{ profile_form.description }}
+                </div>
 
-    </div>
-  </div>
-      <script>
-        $('#skills li').formset({
-          addText: 'Add Skill',
-          deleteText: 'Remove Skill',
-          addCssClass: 'circle--clone--add',
-          deleteCssClass: 'circle--clone--remove'
-        });
-      </script>
-      <script>
-        $('#githubs li').formset({
-          addText: 'Add GitHub Repo',
-          deleteText: 'Remove GitHub Repo',
-          addCssClass: 'circle--clone--add',
-          deleteCssClass: 'circle--clone--remove'
-        });
-      </script>
-</form>
+                <h2>Past Projects</h2>
+                <table class="u-full-width circle--table">
+                    <thead>
+                    <tr>
+                        <th>Project Title</th>
+                        <th class="circle--cell--right">Project Needs</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for project in projects %}
+                        <tr class="clickable-row" data-href="{% url "projects:project" pk=project.id %}">
+                            <td>
+                                <h3>{{ project.name }}</h3>
+                            </td>
+                            <td class="circle--cell--right">
+                                <span class="secondary-label">{{ project.requirements }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid-25 grid-push-5">
+
+                <div class="circle--secondary--module">
+                    <div class="circle--primary--avatar">
+                        <a class="button">
+                            Upload Photo
+                            {{ profile_form.avatar.errors }}
+                            {{ profile_form.avatar }}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="circle--secondary--module">
+                    <h4>My Skills</h4>
+                    {{ skills_formset.management_form }}
+                    {{ skills_formset.non_form_errors }}
+                    {% for skills in skills_formset %}
+                        <ul id="skills" class="circle--clone--list">
+                            <li>
+                                {{ skills.id }} {{ skills.skill }}
+                            </li>
+                        </ul>
+                    {% endfor %}
+                </div>
+
+                <div class="circle--secondary--module">
+                    <h4>My Github Projects</h4>
+                    {{ github_formset.management_form }}
+                    {{ github_formset.non_form_errors }}
+                    {% for githubs in github_formset %}
+                        <ul id="githubs" class="circle--clone--list">
+                            <li>
+                                {{ githubs.id }}{{ githubs.github_project }}{{ githubs.github_url }}
+                            </li>
+                        </ul>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        <script>
+            $('#skills li').formset({
+                addText: 'Add Skill',
+                deleteText: 'Remove Skill',
+                addCssClass: 'circle--clone--add',
+                deleteCssClass: 'circle--clone--remove'
+            });
+        </script>
+        <script>
+            $('#githubs li').formset({
+                addText: 'Add GitHub Repo',
+                deleteText: 'Remove GitHub Repo',
+                addCssClass: 'circle--clone--add',
+                deleteCssClass: 'circle--clone--remove'
+            });
+        </script>
+    </form>
 {% endblock %}

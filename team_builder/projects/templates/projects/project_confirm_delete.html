@@ -1,15 +1,13 @@
 {% extends "layout.html" %}
 
-
-
 {% block body_content %}
-  <div class="bounds circle--page circle--article">
-    <h1>Are You Sure You Want to Delete This Project?</h1>
+    <div class="bounds circle--page circle--article">
+        <h1>Are You Sure You Want to Delete This Project?</h1>
         <form method="POST">
             {% csrf_token %}
             <input type="submit" class="btn btn-primary" value="Delete">
             <a href="{%  url 'projects:project' pk=project.pk %}">Cancel</a>
         </form>
-  </div>
+    </div>
 
 {% endblock %}

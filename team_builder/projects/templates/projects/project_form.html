@@ -1,13 +1,12 @@
 {% extends "layout.html" %}
 {% load bootstrap3 %}
 
-
 {% block body_content %}
     <form method="POST">
-    {% csrf_token %}
+        {% csrf_token %}
         <p>
-        <label for="id_name">{{ form.fields.name.label }}:</label>
-        <input id="id_name" maxlength="200" name="name" type="text" value="{{ project.name }}">
+            <label for="id_name">{{ form.fields.name.label }}:</label>
+            <input id="id_name" maxlength="200" name="name" type="text" value="{{ project.name }}">
         </p>
         <input type="submit" class="btn btn-primary" value="Save">
     </form>
