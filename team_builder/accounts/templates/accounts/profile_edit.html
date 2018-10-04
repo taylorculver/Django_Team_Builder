@@ -68,40 +68,44 @@
                     <h4>My Skills</h4>
                     {{ skills_formset.management_form }}
                     {{ skills_formset.non_form_errors }}
-                    {% for skills in skills_formset %}
-                        <ul id="skills" class="circle--clone--list">
+                    <ul id="skills" class="circle--clone--list">
+                        {% for skills in skills_formset %}
                             <li>
                                 {{ skills.id }} {{ skills.skill }}
                             </li>
-                        </ul>
-                    {% endfor %}
+                        {% endfor %}
+                    </ul>
                 </div>
 
                 <div class="circle--secondary--module">
                     <h4>My Github Projects</h4>
                     {{ github_formset.management_form }}
                     {{ github_formset.non_form_errors }}
-                    {% for githubs in github_formset %}
-                        <ul id="githubs" class="circle--clone--list">
+                    <ul id="githubs" class="circle--clone--list">
+                        {% for githubs in github_formset %}
                             <li>
-                                {{ githubs.id }}{{ githubs.github_project }}{{ githubs.github_url }}
+                                {{ githubs.id }} {{ githubs.github_project }} {{ githubs.github_url }}
                             </li>
-                        </ul>
-                    {% endfor %}
+                        {% endfor %}
+                    </ul>
                 </div>
 
             </div>
         </div>
+
         <script>
             $('#skills li').formset({
+                prefix: '{{ skills_formset.prefix }}',
+                {#prefix is required for multiple formset on single page#}
                 addText: 'Add Skill',
                 deleteText: 'Remove Skill',
                 addCssClass: 'circle--clone--add',
                 deleteCssClass: 'circle--clone--remove'
             });
-        </script>
-        <script>
+
             $('#githubs li').formset({
+                prefix: '{{ github_formset.prefix }}',
+                {#prefix is required for multiple formset on single page#}
                 addText: 'Add GitHub Repo',
                 deleteText: 'Remove GitHub Repo',
                 addCssClass: 'circle--clone--add',
